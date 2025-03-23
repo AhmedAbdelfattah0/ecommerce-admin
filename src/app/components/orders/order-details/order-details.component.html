@@ -36,19 +36,12 @@
         <div class="status-update">
           <mat-form-field appearance="fill">
             <mat-label>Update Status</mat-label>
-            <mat-select [(ngModel)]="selectedStatus">
+            <mat-select [(ngModel)]="selectedStatus" (selectionChange)="updateOrderStatus()">
               <mat-option *ngFor="let status of orderStatuses" [value]="status.id">
                 {{status.status}}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-raised-button
-                  color="primary"
-                  class="status-update-btn"
-                  [disabled]="selectedStatus === order.statusId.toString()"
-                  (click)="updateOrderStatus()">
-            Update Status
-          </button>
         </div>
       </mat-card-content>
     </mat-card>
