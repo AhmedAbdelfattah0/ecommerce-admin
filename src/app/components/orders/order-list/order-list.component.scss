@@ -1,0 +1,174 @@
+.container {
+  padding: 20px;
+  max-width: 100%;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.search-filter {
+  flex: 2;
+  min-width: 280px;
+}
+
+.status-filter {
+  flex: 1;
+  min-width: 200px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-id {
+  width: 60px;
+}
+
+.mat-column-orderNumber {
+  width: 120px;
+}
+
+.mat-column-actions {
+  width: 100px;
+}
+
+.price-value {
+  font-weight: 500;
+}
+
+.status-chip {
+  padding: 4px 8px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+}
+
+.status-delivered {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.status-pending {
+  background-color: #fff9c4;
+  color: #f57f17;
+}
+
+.status-confirmed {
+  background-color: #bbdefb;
+  color: #1565c0;
+}
+
+.status-processing {
+  background-color: #e1bee7;
+  color: #6a1b9a;
+}
+
+.status-shipped {
+  background-color: #b3e5fc;
+  color: #0277bd;
+}
+
+.status-out-for-delivery {
+  background-color: #b2ebf2;
+  color: #00838f;
+}
+
+.status-canceled {
+  background-color: #ffcdd2;
+  color: #c62828;
+}
+
+.status-returned {
+  background-color: #ffccbc;
+  color: #bf360c;
+}
+
+.status-refunded {
+  background-color: #d7ccc8;
+  color: #4e342e;
+}
+
+.status-failed {
+  background-color: #ef9a9a;
+  color: #b71c1c;
+}
+
+.status-on-hold {
+  background-color: #ffe0b2;
+  color: #e65100;
+}
+
+.status-partially-shipped {
+  background-color: #c5cae9;
+  color: #283593;
+}
+
+.status-awaiting-payment {
+  background-color: #f0f4c3;
+  color: #827717;
+}
+
+.status-default {
+  background-color: #eceff1;
+  color: #455a64;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.no-data {
+  padding: 20px !important;
+  text-align: center;
+}
+
+.no-data-message {
+  color: #666;
+  font-style: italic;
+}
+
+.loading-indicator {
+  color: #666;
+}

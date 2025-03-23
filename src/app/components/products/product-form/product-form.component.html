@@ -230,7 +230,7 @@
 
         <div class="form-actions">
           <button mat-button routerLink="/products" type="button" [disabled]="isLoading">CANCEL</button>
-          <button mat-raised-button color="stroked" type="submit" [disabled]="productForm.invalid || isLoading">
+          <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid || isLoading">
             {{ isEditMode ? 'UPDATE' : 'CREATE' }}
           </button>
         </div>

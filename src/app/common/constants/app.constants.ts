@@ -45,4 +45,9 @@ export const toasterCases = {
     Message:'Product Deleted Successfuly',
   },
 
+  ORDER_STATUS_UPDATED: {
+    toasterType: 'ORDER_STATUS_UPDATED',
+    isVisible: true,
+    Message:'Order Status Updated Successfuly',
+  },
 }

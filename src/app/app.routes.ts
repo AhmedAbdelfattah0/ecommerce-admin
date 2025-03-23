@@ -6,6 +6,8 @@ import { CategoriesListComponent } from './components/categories/categories-list
 import { CategoryFormComponent } from './components/categories/category-form/category-form.component';
 import { SubCategoriesListComponent } from './components/sub-categories/sub-categories-list/sub-categories-list.component';
 import { SubCategoryFormComponent } from './components/sub-categories/sub-category-form/sub-category-form.component';
+import { OrderListComponent } from './components/orders/order-list/order-list.component';
+import { OrderDetailsComponent } from './components/orders/order-details/order-details.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -19,9 +21,10 @@ export const routes: Routes = [
   { path: 'sub-categories', component: SubCategoriesListComponent },
   { path: 'sub-categories/new', component: SubCategoryFormComponent },
   { path: 'sub-categories/edit/:id', component: SubCategoryFormComponent },
+  { path: 'orders', component: OrderListComponent },
+  { path: 'orders/:id', component: OrderDetailsComponent },
   // Add similar patterns for other features
   { path: 'marketing-categories', component: ProductListComponent }, // Placeholder
-  { path: 'orders', component: ProductListComponent }, // Placeholder
   { path: 'customer-messages', component: ProductListComponent }, // Placeholder
   { path: 'banners', component: ProductListComponent }, // Placeholder
 ];

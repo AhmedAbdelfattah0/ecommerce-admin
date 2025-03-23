@@ -1,18 +1,24 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'addSpaceAfterCurrency'
+  name: 'addSpaceAfterCurrency',
+  standalone: true
 })
 export class AddSpaceAfterCurrencyPipe implements PipeTransform {
-  transform(value: string | null): string {
-    if (!value) return '';
+  transform(value: number | string | null | undefined): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
 
-    // This regex splits the string into two parts:
-    // 1. The currency symbol(s) (any non-digit characters at the beginning)
-    // 2. The number (starting with the first digit and everything after)
-    return value.replace(/^([^0-9]+)([0-9].*)$/, (_, symbol, number) => {
-      // Trim any extra spaces from the symbol and add exactly one space between the symbol and number.
-      return symbol.trim() + ' ' + number;
-    });
+    // Convert to string and ensure it's a valid number
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+
+    // Check if the conversion resulted in a valid number
+    if (isNaN(numValue)) {
+      return '';
+    }
+
+    // Format with SAR currency and add space after the currency symbol
+    return `SAR ${numValue.toFixed(2)}`;
   }
 }
