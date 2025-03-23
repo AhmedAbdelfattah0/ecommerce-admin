@@ -1,0 +1,79 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ isEditMode ? 'Edit' : 'Create' }} Product</mat-card-title>
+    <mat-card-subtitle>{{ isEditMode ? 'Update product information' : 'Add a new product to your inventory' }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+      <div class="form-field-group">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Product Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter product name">
+          <mat-error *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Price</mat-label>
+          <input matInput type="number" formControlName="price" placeholder="0.00" min="0" step="0.01">
+          <span matPrefix>$&nbsp;</span>
+          <mat-error *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+            Valid price is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-field-group">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category">
+            <mat-option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="productForm.get('category')?.invalid && productForm.get('category')?.touched">
+            Category is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Stock</mat-label>
+          <input matInput type="number" formControlName="stock" placeholder="0" min="0" step="1">
+          <mat-error *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
+            Valid stock quantity is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="4" placeholder="Enter product description"></textarea>
+        <mat-error *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+          Description is required
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-field-group">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Image URL</mat-label>
+          <input matInput formControlName="imageUrl" placeholder="Enter image URL">
+          <mat-icon matSuffix>image</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="image-preview-container" *ngIf="productForm.get('imageUrl')?.value">
+        <img [src]="productForm.get('imageUrl')?.value" class="image-preview" alt="Product preview">
+        <span class="image-preview-label">Image Preview</span>
+      </div>
+
+      <div class="form-actions">
+        <button mat-button routerLink="/dashboard/products" type="button">CANCEL</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid">
+          {{ isEditMode ? 'UPDATE' : 'CREATE' }}
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

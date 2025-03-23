@@ -1,0 +1,52 @@
+@use 'sass:map';
+@use 'variables' as v;
+
+@mixin respond-above($breakpoint) {
+  @if map.has-key(v.$breakpoints, $breakpoint) {
+    $breakpoint-value: map.get(v.$breakpoints, $breakpoint);
+    @media (min-width: $breakpoint-value) {
+      @content;
+    }
+  } @else {
+    @warn "Invalid breakpoint: #{$breakpoint}.";
+  }
+}
+
+@mixin respond-below($breakpoint) {
+  @if map.has-key(v.$breakpoints, $breakpoint) {
+    $breakpoint-value: map.get(v.$breakpoints, $breakpoint);
+    @media (max-width: ($breakpoint-value - 1)) {
+      @content;
+    }
+  } @else {
+    @warn "Invalid breakpoint: #{$breakpoint}.";
+  }
+}
+
+@mixin flex-center($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin grid($columns, $gap: v.$base-spacing) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+}
+
+@mixin hover-effect {
+  transition: v.$transition-base;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(v.$black, 0.1);
+  }
+}
+
+@mixin container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 v.$base-spacing;
+}

@@ -1,0 +1,245 @@
+/* You can add global styles to this file, and also import other style files */
+
+// Import SCSS files with modern syntax
+@use 'scss/variables';
+@use 'scss/mixins';
+@use 'scss/common';
+@use 'scss/global';
+
+/* Light Theme Variables - Refined to match ngx-admin */
+:root {
+  /* Main colors */
+  --primary-color: #5a6acf;
+  --primary-light: #7d89e0;
+  --primary-dark: #4a5ab5;
+  --primary-background: #edf1f7;
+  --accent-color: #7d89e0;
+  --warn-color: #ff3d71;
+  --success-color: #00d68f;
+  --info-color: #0095ff;
+  --warning-color: #ffaa00;
+  --danger-color: #ff3d71;
+
+  /* Background colors */
+  --background-color: #f7f9fc;
+  --card-color: #ffffff;
+
+  /* Sidebar colors */
+  --sidebar-color: #ffffff;
+  --sidebar-shadow: 0 0 1.5rem 0 rgba(44, 51, 73, 0.1);
+  --sidebar-text-color: #222b45;
+  --sidebar-active-bg: rgba(51, 102, 255, 0.1);
+  --sidebar-active-color: #3366ff;
+  --sidebar-hover-bg: #f7f9fc;
+
+  /* Text colors */
+  --text-primary: #222b45;
+  --text-secondary: #8f9bb3;
+  --text-hint: #a6b1d0;
+
+  /* Border & shadows */
+  --border-color: #edf1f7;
+  --border-radius: 0.25rem;
+  --shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1);
+  --header-shadow: 0 0.125rem 0.375rem -0.0625rem rgba(44, 51, 73, 0.03);
+
+  /* Font */
+  --font-family: 'Open Sans', sans-serif;
+
+  /* New variables for ngx-admin */
+  --card-background: #ffffff;
+  --background: #f7f9fc;
+}
+
+body {
+  font-family: Open Sans, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  color: var(--text-primary);
+  background-color: var(--background);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  padding: 2.25rem 2.25rem 0.75rem;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-title {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.page-subtitle {
+  margin: -1rem 0 1.5rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+}
+
+.app-container {
+  height: 100vh;
+  display: flex;
+}
+
+.content-container {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Override Angular Material with light theme */
+.mat-mdc-card {
+  box-shadow: var(--shadow) !important;
+  border-radius: var(--border-radius) !important;
+  margin-bottom: 1.25rem;
+  border: none !important;
+  background-color: #fff !important;
+  width: 100% !important;
+}
+
+.mat-mdc-card-header {
+  padding: 1.25rem 1.25rem 0;
+}
+
+.mat-mdc-card-content {
+  padding: 1.25rem !important;
+}
+
+/* Apply styling to buttons */
+.mat-mdc-raised-button.mat-primary {
+  background-color: var(--primary-color) !important;
+  font-weight: 600 !important;
+  border-radius: 0.17rem !important;
+  text-transform: uppercase;
+  font-size: 0.8125rem !important;
+  line-height: 1rem !important;
+}
+
+.mat-mdc-raised-button.mat-accent {
+  background-color: var(--success-color) !important;
+}
+
+.mat-mdc-raised-button.mat-warn {
+  background-color: var(--danger-color) !important;
+}
+
+/* Table styling */
+.mat-mdc-table {
+  width: 100%;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.mat-mdc-header-row {
+  background-color: rgba(247, 249, 252, 0.6);
+  border-bottom: 1px solid var(--border-color) !important;
+  min-height: 3.5rem !important;
+}
+
+.mat-mdc-header-cell {
+  font-size: 0.8125rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  padding: 0.75rem 1.5rem !important;
+  letter-spacing: 0.03125rem;
+}
+
+.mat-mdc-cell {
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  padding: 1rem 1.5rem !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.mat-mdc-row {
+  min-height: 3.5rem !important;
+}
+
+.mat-mdc-row:hover {
+  background-color: #f5f7fc;
+}
+
+/* Form field styling */
+.mat-mdc-form-field-appearance-outline .mat-mdc-form-field-outline {
+  color: var(--border-color);
+}
+
+.mat-mdc-form-field-infix {
+  font-size: 0.9375rem !important;
+}
+
+.mat-mdc-form-field-label-wrapper .mat-mdc-form-field-label {
+  font-weight: 400 !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Make the active tab indicator more noticeable */
+.mat-mdc-tab .mdc-tab-indicator__content--underline {
+  border-color: var(--primary-color) !important;
+}
+
+/* Paginator styling */
+.mat-mdc-paginator {
+  background-color: transparent;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+html, body { height: 100%; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #dadce1;
+  border-radius: 0.25rem;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f7f9fc;
+}
+
+/* Layout utilities */
+.flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+/* Custom Angular Material overrides */
+.mat-drawer {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}

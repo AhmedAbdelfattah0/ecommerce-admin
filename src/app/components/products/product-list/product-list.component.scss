@@ -1,0 +1,252 @@
+.container {
+  padding: 2.25rem;
+  max-width: 100%;
+  margin: 0 auto;
+  .main-header{
+    margin-bottom: 1rem;
+  }
+}
+
+.product-table {
+  width: 100%;
+  margin-top: 1.25rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.product-thumbnail {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.action-buttons {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-filter {
+  display: flex;
+  align-items: center;
+  max-width: 20rem;
+}
+
+.mat-mdc-form-field {
+  font-size: 0.9375rem;
+  width: 100%;
+}
+
+.mat-mdc-row:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+td.mat-mdc-cell, th.mat-mdc-header-cell {
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem;
+}
+
+th.mat-mdc-header-cell {
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+}
+
+.mat-column-id {
+  width: 70px;
+}
+
+.mat-column-image {
+  width: 80px;
+}
+
+.mat-column-actions {
+  width: 100px;
+  text-align: right;
+}
+
+.actions-cell {
+  text-align: right;
+  padding-right: 0.5rem;
+}
+
+/* Card styling */
+mat-card {
+  margin-bottom: 1.5rem;
+  padding: 0 !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box;
+}
+
+mat-card-header {
+  padding: 1.5rem 1.5rem 1rem !important;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(247, 249, 252, 0.6);
+}
+
+mat-card-title {
+  margin-bottom: 0.25rem !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary);
+  letter-spacing: 0.03125rem;
+}
+
+mat-card-subtitle {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+}
+
+mat-card-content {
+  padding: 1.5rem !important;
+}
+
+::ng-deep .mat-mdc-paginator-container {
+  justify-content: flex-start !important;
+  padding: 0.5rem 1.5rem !important;
+  border-top: 1px solid var(--border-color);
+}
+
+::ng-deep .mat-mdc-paginator-range-label {
+  margin: 0 1rem !important;
+}
+
+.no-data-row {
+  height: 4rem;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Button styling */
+.mat-mdc-raised-button {
+  font-weight: 600 !important;
+  padding: 0 1.25rem !important;
+  height: 2.5rem !important;
+  line-height: 2.5rem !important;
+}
+
+.column-status {
+  width: 6.25rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03125rem;
+
+  &.status-active {
+    background-color: rgba(0, 214, 143, 0.1);
+    color: var(--success-color);
+  }
+
+  &.status-pending {
+    background-color: rgba(255, 170, 0, 0.1);
+    color: #ffaa00;
+  }
+
+  &.status-inactive {
+    background-color: rgba(143, 155, 179, 0.1);
+    color: var(--text-secondary);
+  }
+}
+
+.table-filters {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  width: 100%;
+}
+
+.search-field {
+  width: 100%;
+  max-width: 30rem;
+  flex-grow: 1;
+}
+
+.stock-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.in-stock {
+  background-color: rgba(0, 214, 143, 0.1);
+  color: var(--success-color);
+}
+
+.low-stock {
+  background-color: rgba(255, 170, 0, 0.1);
+  color: var(--warning-color);
+}
+
+.out-of-stock {
+  background-color: rgba(255, 61, 113, 0.1);
+  color: var(--danger-color);
+}
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1.5rem 1rem 0.5rem;
+  }
+
+  .recent-orders-table {
+    min-width: 650px;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .table-filters {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .search-field {
+    max-width: 100%;
+  }
+}
+
+/* Make sure table is scrollable on small screens */
+::ng-deep .mat-mdc-table {
+  width: 100%;
+  min-width: 800px;
+  background-color: #fff !important;
+}
+
+.product-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Remove any potential margins that could be limiting width */
+.container {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  min-height: 200px;
+}

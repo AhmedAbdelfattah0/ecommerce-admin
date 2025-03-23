@@ -1,0 +1,122 @@
+<div class="container">
+  <h1 class="page-title">Dashboard</h1>
+  <p class="page-subtitle">Store performance overview</p>
+
+  <div class="dashboard-cards">
+    <mat-card appearance="outlined" class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>TOTAL SALES</mat-card-title>
+        <mat-card-subtitle>Last 30 days</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ totalSales | currency }}</div>
+        <div class="metric-chart">
+          <span class="trend up">+5.2%</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>TOTAL ORDERS</mat-card-title>
+        <mat-card-subtitle>Last 30 days</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ totalOrders }}</div>
+        <div class="metric-chart">
+          <span class="trend up">+2.8%</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>AVERAGE ORDER</mat-card-title>
+        <mat-card-subtitle>Last 30 days</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ averageOrder | currency }}</div>
+        <div class="metric-chart">
+          <span class="trend up">+1.5%</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="dashboard-card">
+      <mat-card-header>
+        <mat-card-title>PRODUCTS</mat-card-title>
+        <mat-card-subtitle>Total count</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="metric-value">{{ totalProducts }}</div>
+        <div class="metric-chart">
+          <span class="trend neutral">0%</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dashboard-charts">
+    <mat-card appearance="outlined" class="chart-card">
+      <mat-card-header>
+        <mat-card-title>SALES OVERVIEW</mat-card-title>
+        <mat-card-subtitle>Monthly revenue</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chart-placeholder">
+          <!-- Chart visualization would go here -->
+          <div class="chart-bars">
+            <div class="chart-bar" style="height: 60%"></div>
+            <div class="chart-bar" style="height: 80%"></div>
+            <div class="chart-bar" style="height: 65%"></div>
+            <div class="chart-bar" style="height: 90%"></div>
+            <div class="chart-bar" style="height: 75%"></div>
+            <div class="chart-bar" style="height: 85%"></div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined" class="table-card">
+      <mat-card-header>
+        <mat-card-title>RECENT ORDERS</mat-card-title>
+        <mat-card-subtitle>Last 5 orders</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="recentOrders" class="recent-orders-table">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let order">#{{ order.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>DATE</th>
+            <td mat-cell *matCellDef="let order">{{ order.date | date }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="customer">
+            <th mat-header-cell *matHeaderCellDef>CUSTOMER</th>
+            <td mat-cell *matCellDef="let order">{{ order.customer }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef>TOTAL</th>
+            <td mat-cell *matCellDef="let order">{{ order.total | currency }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>STATUS</th>
+            <td mat-cell *matCellDef="let order">
+              <span class="status-badge" [ngClass]="order.status.toLowerCase()">
+                {{ order.status }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

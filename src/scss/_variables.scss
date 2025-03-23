@@ -1,0 +1,30 @@
+// Colors
+$primary-color: #2d3436;
+$accent-color: #e74c3c;
+$light-gray: #f9f9f9;
+$dark-gray: #636e72;
+$white: #ffffff;
+$black: #000000;
+$light-brown:#B88E2F;
+$Light-beige:#FAF3EA;
+// Breakpoints
+$breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
+
+// Spacing
+$base-spacing: 1rem;
+$spacing-multipliers: (0, 0.5, 1, 1.5, 2, 3, 4, 5, 6);
+
+// Typography
+$base-font-size: 16px;
+$font-family-primary: 'Poppins','Inter', sans-serif;
+$font-family-secondary: 'Poppins', 'Playfair Display', serif;
+
+// Transitions
+$transition-base: all 0.3s ease;

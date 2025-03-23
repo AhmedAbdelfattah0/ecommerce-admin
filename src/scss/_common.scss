@@ -1,0 +1,77 @@
+@use 'mixins' as *;
+@use 'variables' as v;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: v.$base-font-size;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: v.$font-family-primary;
+  line-height: 1.6;
+  color: v.$primary-color;
+}
+
+// Typography
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: v.$font-family-secondary;
+  margin-bottom: v.$base-spacing;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: v.$transition-base;
+}
+
+// Utility classes
+.container {
+  @include container;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.section-padding {
+  padding: 4rem 0;
+
+  @include respond-below(md) {
+    padding: 2rem 0;
+  }
+}
+
+// Responsive helpers
+@each $breakpoint, $value in v.$breakpoints {
+  .hidden-#{$breakpoint}-up {
+    @include respond-above($breakpoint) {
+      display: none !important;
+    }
+  }
+
+  .hidden-#{$breakpoint}-down {
+    @include respond-below($breakpoint) {
+      display: none !important;
+    }
+  }
+}
+
+// // Customize the entire app. Change :root to your selector if you want to scope the styles.
+// :root {
+//   @include mat.menu-overrides((
+//     container-color: #fff
+//   ));
+
+//   :ng-deep
+// }

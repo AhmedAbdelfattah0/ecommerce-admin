@@ -1,0 +1,287 @@
+.sidenav-container {
+  height: calc(100vh - 4.75rem);
+  background-color: var(--background-color);
+}
+
+.sidenav {
+  width: 16.25rem;
+  background-color: var(--sidebar-color);
+  border-right: none;
+  box-shadow: var(--sidebar-shadow);
+  overflow-y: auto;
+}
+
+.sidenav-content {
+  background-color: var(--background-color);
+  overflow-y: auto;
+}
+
+.content-container {
+  padding: 2.25rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+mat-toolbar {
+  background-color: var(--card-color);
+  color: var(--text-primary);
+  box-shadow: var(--header-shadow);
+  position: relative;
+  z-index: 10;
+  height: 4.75rem;
+  padding: 0 2.25rem;
+}
+
+mat-nav-list {
+  padding: 0;
+}
+
+mat-nav-list a {
+  color: var(--text-primary);
+  height: 3.5rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  border-left: 0.1875rem solid transparent;
+  transition: all 0.2s ease;
+  padding: 0 1rem;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+}
+
+mat-nav-list mat-icon {
+  color: var(--text-secondary);
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+mat-nav-list a.active {
+  background-color: var(--sidebar-active-bg);
+  border-left-color: var(--primary-color);
+  color: var(--sidebar-active-color);
+  font-weight: 500;
+}
+
+mat-nav-list a.active mat-icon {
+  color: var(--sidebar-active-color);
+}
+
+mat-nav-list a:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+.toolbar-logo {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding-left: 0.5rem;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.03125rem;
+  font-family: var(--font-family);
+}
+
+.toolbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--sidebar-active-bg);
+  color: var(--primary-color);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.header-menu-icon {
+  color: var(--text-secondary);
+}
+
+.header-menu-icon:hover {
+  color: var(--primary-color);
+}
+
+.sidenav-header {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidenav-logo {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.03125rem;
+}
+
+@media (max-width: 991.98px) {
+  .content-container {
+    padding: 1.25rem;
+  }
+
+  mat-toolbar {
+    padding: 0 1.25rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sidenav {
+    width: 16rem;
+  }
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-card {
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease-in-out;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+}
+
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+mat-card {
+  padding: 0 !important;
+}
+
+mat-card-header {
+  padding: 1.5rem 1.5rem 1rem !important;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(247, 249, 252, 0.6);
+}
+
+mat-card-content {
+  padding: 1.5rem !important;
+}
+
+mat-card-title {
+  margin-bottom: 0.25rem !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary);
+  letter-spacing: 0.03125rem;
+}
+
+mat-card-subtitle {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem !important;
+}
+
+.metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.metric-chart {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.trend {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+}
+
+.trend.up {
+  color: var(--success-color);
+  background-color: rgba(0, 214, 143, 0.1);
+}
+
+.trend.down {
+  color: var(--danger-color);
+  background-color: rgba(255, 61, 113, 0.1);
+}
+
+.trend.neutral {
+  color: var(--text-secondary);
+  background-color: rgba(143, 155, 179, 0.1);
+}
+
+.chart-placeholder {
+  height: 250px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+}
+
+.chart-bars {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+}
+
+.chart-bar {
+  width: 12%;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(to top, var(--primary-light), var(--primary-color));
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.completed {
+  background-color: rgba(0, 214, 143, 0.1);
+  color: var(--success-color);
+}
+
+.processing {
+  background-color: rgba(0, 149, 255, 0.1);
+  color: var(--info-color);
+}
+
+.shipped {
+  background-color: rgba(255, 170, 0, 0.1);
+  color: var(--warning-color);
+}
+
+.recent-orders-table {
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-card-header-text {
+  width: 100%;
+}
