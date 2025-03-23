@@ -5,7 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-
+import {ToasterComponent} from './shared/toaster/toaster.component'
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -17,7 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatListModule,
     MatIconModule,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    ToasterComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

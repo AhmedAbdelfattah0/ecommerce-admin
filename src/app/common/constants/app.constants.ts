@@ -25,6 +25,24 @@ export const toasterCases = {
       link: '',
       isVisible: false,
     },
+  },
 
-}
+  PRODUCT_CREATED: {
+    toasterType: 'PRODUCT_CREATED',
+    isVisible: true,
+    Message:'Product Created Successfuly',
+  },
+
+  PRODUCT_UPDATED: {
+    toasterType: 'PRODUCT_UPDATED',
+    isVisible: true,
+    Message:'Product Updated Successfuly',
+  },
+
+  PRODUCT_DELETED: {
+    toasterType: 'PRODUCT_DELETED',
+    isVisible: true,
+    Message:'Product Deleted Successfuly',
+  },
+
 }

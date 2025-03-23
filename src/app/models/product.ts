@@ -22,27 +22,27 @@ export interface Product {
   availability:string;
   qty:number;
 }
-export interface Product_v2 {
-  id: number;
-  title: string;
-  titleAr:string;
-  discountedPrice: string;
-  description: string;
-  images: Array<string>;
-  videoLink: string;
-  categoryId: string;
-  subCategoryId: number;
-  categoryName:string;
-  // stock: number;
-  rating: number;
-  isNew?: boolean;
-  discount: number;
-  originalPrice: string;
-  reviews?: number;
-  badge?:string;
-  subtitle?:string;
-  availability:string;
-}
+// export interface Product_v2 {
+//   id: number;
+//   title: string;
+//   titleAr:string;
+//   discountedPrice: string;
+//   description: string;
+//   images: Array<string>;
+//   videoLink: string;
+//   categoryId: string;
+//   subCategoryId: number;
+//   categoryName:string;
+//   // stock: number;
+//   rating: number;
+//   isNew?: boolean;
+//   discount: number;
+//   originalPrice: string;
+//   reviews?: number;
+//   badge?:string;
+//   subtitle?:string;
+//   availability:string;
+// }
 
 export interface ProductsResponse{
   total:number;
@@ -58,6 +58,7 @@ export interface ProductList {
 
    originalPrice: string;
   price: string;
+  categoryName:string;
   // categoryId: string;
   // subCategoryId: number;
   // stock: number;

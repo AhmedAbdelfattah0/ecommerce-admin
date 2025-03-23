@@ -1,0 +1,11 @@
+@if(toasterService.toasterObject()?.isVisible){
+<div class="container">
+  <skapa-toast id="main-toast" style="padding-left: 1rem;" [show]="toasterService.toasterObject()?.isVisible"
+    (skapa-toast-dismissed)="afterDismiss()">
+    @if(toasterService.toasterObject()?.Message){
+    {{toasterService.toasterObject()?.Message}}
+    }
+
+  </skapa-toast>
+</div>
+}

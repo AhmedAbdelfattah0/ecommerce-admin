@@ -1,0 +1,68 @@
+<div class="container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <div class="form-section-title">{{ isEditMode ? 'Edit' : 'Add' }} Category</div>
+
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Loading...</span>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="category-form" [class.disabled]="isLoading">
+        <div class="form-field-group">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Category Title (English)</mat-label>
+            <input matInput formControlName="title" placeholder="Enter category title">
+            <mat-error *ngIf="categoryForm.get('title')?.invalid && categoryForm.get('title')?.touched">
+              Title is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Category Title (Arabic)</mat-label>
+            <input matInput formControlName="titleAr" placeholder="Enter category title in Arabic">
+            <mat-error *ngIf="categoryForm.get('titleAr')?.invalid && categoryForm.get('titleAr')?.touched">
+              Arabic title is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-section-title">Category Image</div>
+
+        <div class="form-field-group">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Image URL</mat-label>
+            <input matInput formControlName="imgOne" placeholder="Enter image URL">
+            <mat-icon matSuffix>image</mat-icon>
+            <mat-error *ngIf="categoryForm.get('imgOne')?.invalid && categoryForm.get('imgOne')?.touched">
+              Image is required
+            </mat-error>
+          </mat-form-field>
+          <div class="image-upload-actions">
+            <input type="file" #imageInput accept="image/*" style="display: none" (change)="onImageSelected($event)">
+            <button mat-stroked-button type="button" (click)="imageInput.click()">
+              <mat-icon>upload</mat-icon> Upload
+            </button>
+            <button mat-stroked-button type="button" *ngIf="imagePreview" (click)="clearImage()">
+              <mat-icon>delete</mat-icon> Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="image-preview-container" *ngIf="imagePreview">
+          <img [src]="imagePreview" class="image-preview" alt="Category image preview">
+          <span class="image-preview-label">Image Preview</span>
+        </div>
+
+        <div class="form-actions">
+          <button mat-button routerLink="/categories" type="button" [disabled]="isLoading">CANCEL</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid || isLoading">
+            {{ isEditMode ? 'UPDATE' : 'CREATE' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

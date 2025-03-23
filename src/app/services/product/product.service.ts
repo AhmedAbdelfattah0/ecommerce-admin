@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap, delay } from 'rxjs/operators';
-import { Product, Product_v2, ProductsResponse } from '../../models/product';
+import { Product, ProductsResponse } from '../../models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -44,10 +44,10 @@ export class ProductService {
       );
   }
 
-  getProduct(id: number): Observable<Product_v2> {
-    return this.http.get<Product_v2>(`${this.apiUrl}/get_product-v2.php/?id=${id}`)
+  getProduct(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/get_product.php/?id=${id}`)
       .pipe(
-        catchError(this.handleError<Product_v2>('getProduct', {} as Product_v2))
+        catchError(this.handleError<Product>('getProduct', {} as Product))
       );
   }
 
@@ -56,6 +56,28 @@ export class ProductService {
       .pipe(
         catchError(this.handleError('getProductsByCategory', []))
       );
+  }
+
+
+  updateProduct(product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/update_product.php`, product)
+      .pipe(
+        catchError(this.handleError('updateProduct', {} as Product))
+      );
+  }
+
+  createProduct(product: Product): Observable<Product> {
+    return this.http.post<Product>(`${this.apiUrl}/create_product.php`, product)
+      .pipe(
+        catchError(this.handleError('createProduct', {} as Product))
+      );
+  }
+
+
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/delete_product.php`, {body:{id:id}} ).pipe(
+      catchError(this.handleError('deleteProduct', undefined))
+    );
   }
 
   /**
@@ -72,14 +94,8 @@ export class ProductService {
       // Log the error to an error reporting service
       console.error('Error details:', error);
 
-      // If this is a development environment, return mock data
-      if (operation === 'getProducts') {
-        console.log('Returning mock products data');
-        return of([] as unknown as T);
-      }
-
-      // Let the app keep running by returning an empty result
-      return of(result as T);
+      // Return the error to the subscriber
+      return throwError(() => error);
     };
   }
 }

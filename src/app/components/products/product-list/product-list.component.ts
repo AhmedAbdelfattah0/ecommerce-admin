@@ -15,6 +15,12 @@ import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../services/product/product.service';
 import { finalize } from 'rxjs/operators';
 import { Product, ProductList } from '../../../models/product';
+import { AddSpaceAfterCurrencyPipe } from "../../../common/pipes/add-space-after-currency";
+import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb.component';
+import { toasterCases } from '../../../common/constants/app.constants';
+import { ToasterService } from '../../../services/toatser.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../shared/confirmation-dialog/confirmation-dialog.component';
 
 // Local product interface that matches our component needs
 
@@ -34,7 +40,10 @@ import { Product, ProductList } from '../../../models/product';
     MatTooltipModule,
     MatProgressSpinnerModule,
     FormsModule,
-    CommonModule
+    CommonModule,
+    AddSpaceAfterCurrencyPipe,
+    BreadcrumbComponent,
+    ConfirmationDialogComponent
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
@@ -42,13 +51,22 @@ import { Product, ProductList } from '../../../models/product';
 export class ProductListComponent implements OnInit {
   products: ProductList[] = [];
   dataSource!: MatTableDataSource<ProductList>;
-  displayedColumns: string[] = ['id', 'imgOne', 'title', 'price', 'category', 'stock', 'actions'];
+  displayedColumns: string[] = ['id', 'imgOne', 'title', 'price', 'categoryName',  'actions'];
   isLoading = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private productService: ProductService) {}
+  breadcrumbItems: BreadcrumbItem[] = [
+    { label: 'Dashboard', url: '/dashboard' },
+    { label: 'Products' }
+  ];
+
+  constructor(
+    private productService: ProductService,
+    private toasterService: ToasterService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -68,8 +86,8 @@ export class ProductListComponent implements OnInit {
             const product: ProductList = {
               id: p.id || 0,
               title: p.title || 'Unknown Product',
-              price: p.discountedPrice ? p.discountedPrice : p.originalPrice || 0,
-              // category: p.categoryName || 'Uncategorized',
+              price: Number(p.discountedPrice) ? p.discountedPrice : p.originalPrice  ,
+              categoryName: p.categoryName || 'Uncategorized',
               // stock: p.quantity || p.stock || 0,
               imgOne: p.imgOne || p.imgTwo || p.imgThree || p.imgFour || '',
 
@@ -114,11 +132,39 @@ export class ProductListComponent implements OnInit {
   }
 
   deleteProduct(id: number): void {
-    // Would call API service here
-    // For now, just remove from local array
-    this.products = this.products.filter(product => product.id !== id);
-    this.dataSource.data = this.products;
-    // Show a success message
+    const dialogData: ConfirmationDialogData = {
+      title: 'Delete Product',
+      message: 'Are you sure you want to delete this product? This action cannot be undone.',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    };
+
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.isLoading = true;
+        this.productService.deleteProduct(id)
+          .pipe(finalize(() => this.isLoading = false))
+          .subscribe({
+            next: () => {
+              this.products = this.products.filter(product => product.id !== id);
+              this.dataSource.data = this.products;
+              this.toasterService.openToaster(toasterCases.PRODUCT_DELETED);
+            },
+            error: (error) => {
+              console.error('Error deleting product:', error);
+              this.toasterService.openToaster({
+                message: 'Failed to delete product. Please try again.',
+                type: 'error'
+              });
+            }
+          });
+      }
+    });
   }
 
   getStockClass(stock: number): string {

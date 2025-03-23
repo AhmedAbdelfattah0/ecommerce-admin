@@ -41,11 +41,19 @@
 
 .sidenav-menu {
   padding: 1rem;
-  ::ng-deep .mat-mdc-list-base{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+
+}
+.mat-mdc-list-base{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mat-mdc-nav-list .mat-mdc-list-item {
+  border-radius: 0;
+}
+.mat-mdc-raised-button, .mat-mdc-raised-button .mdc-button__ripple{
+  border-radius: 0;
 }
 
 .mat-mdc-list-item {

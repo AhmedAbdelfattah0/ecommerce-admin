@@ -1,0 +1,41 @@
+<div class="container">
+  <app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+  <div class="form-section-title">{{ isEditMode ? 'Edit' : 'Add' }} Sub-Category</div>
+
+  <div class="loading-container" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <span>Loading...</span>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="subCategoryForm" (ngSubmit)="onSubmit()" class="category-form" [class.disabled]="isLoading">
+        <div class="form-field-group">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Sub-Category Title (English)</mat-label>
+            <input matInput formControlName="title" placeholder="Enter sub-category title">
+            <mat-error *ngIf="subCategoryForm.get('title')?.invalid && subCategoryForm.get('title')?.touched">
+              Title is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Sub-Category Title (Arabic)</mat-label>
+            <input matInput formControlName="titleAr" placeholder="Enter sub-category title in Arabic">
+            <mat-error *ngIf="subCategoryForm.get('titleAr')?.invalid && subCategoryForm.get('titleAr')?.touched">
+              Arabic title is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-button routerLink="/sub-categories" type="button" [disabled]="isLoading">CANCEL</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="subCategoryForm.invalid || isLoading">
+            {{ isEditMode ? 'UPDATE' : 'CREATE' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
