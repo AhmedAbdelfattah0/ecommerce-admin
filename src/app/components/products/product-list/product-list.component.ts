@@ -43,7 +43,7 @@ import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../sh
     CommonModule,
     AddSpaceAfterCurrencyPipe,
     BreadcrumbComponent,
-    ConfirmationDialogComponent
+
   ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'

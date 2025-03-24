@@ -38,8 +38,7 @@ import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../sh
     FormsModule,
     RouterModule,
     BreadcrumbComponent,
-    ConfirmationDialogComponent
-  ],
+   ],
   templateUrl: './categories-list.component.html',
   styleUrl: './categories-list.component.scss'
 })

@@ -27,8 +27,7 @@ import { toasterCases } from '../../../common/constants/app.constants';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    FormsModule,
+     FormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -136,6 +135,11 @@ export class OrderDetailsComponent implements OnInit {
       return;
     }
 
+    // Blur any active element to prevent focus retention issues
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
     const currentStatus = this.orderStatuses.find(s => s.id === this.order?.statusId.toString())?.status || '';
     const newStatus = this.orderStatuses.find(s => s.id === this.selectedStatus)?.status || '';
 
@@ -146,37 +150,36 @@ export class OrderDetailsComponent implements OnInit {
       cancelButtonText: 'Cancel'
     };
 
-    this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-      data: dialogData
-    }).afterClosed().subscribe(result => {
-      if (result && this.order) {
-        this.isSaving = true;
-        this.orderService.updateOrderStatus(this.order.id.toString(), this.selectedStatus)
-          .pipe(finalize(() => this.isSaving = false))
-          .subscribe({
-            next: (updatedOrder) => {
-              if (!updatedOrder) return;
-              this.loadOrderDetails(this.order!.id.toString());
-              // Update the displayed products/items
-              if (updatedOrder.products && updatedOrder.products.length > 0) {
-                this.orderItems = updatedOrder.products;
-              } else if (updatedOrder.items && updatedOrder.items.length > 0) {
-                this.orderItems = updatedOrder.items;
-              }
-              this.toasterService.openToaster(toasterCases.ORDER_STATUS_UPDATED);
-            },
-            error: (error) => {
-              console.error('Error updating order status:', error);
-              this.selectedStatus = this.order!.statusId.toString(); // Reset to original
+    // Use setTimeout to ensure the blur has taken effect before opening the dialog
+    setTimeout(() => {
+      this.dialog.open(ConfirmationDialogComponent, {
+        width: '400px',
+        data: dialogData,
+        autoFocus: false // Prevent automatic focus which can cause ARIA issues
+      }).afterClosed().subscribe(result => {
+        if (result && this.order) {
+          this.isSaving = true;
+          this.orderService.updateOrderStatus(this.order.id.toString(), this.selectedStatus)
+            .pipe(finalize(() => this.isSaving = false))
+            .subscribe({
+              next: (updatedOrder) => {
+                if (!updatedOrder) return;
 
-            }
-          });
-      } else {
-        // Reset selection if cancelled
-        this.selectedStatus = this.order?.statusId.toString() || '';
-      }
-    });
+                // Completely reload the order details instead of partial updates
+                this.loadOrderDetails(this.order!.id.toString());
+                this.toasterService.openToaster(toasterCases.ORDER_STATUS_UPDATED);
+              },
+              error: (error) => {
+                console.error('Error updating order status:', error);
+                this.selectedStatus = this.order!.statusId.toString(); // Reset to original
+              }
+            });
+        } else {
+          // Reset selection if cancelled
+          this.selectedStatus = this.order?.statusId.toString() || '';
+        }
+      });
+    }, 0);
   }
 
   getStatusChipClass(statusId: number): string {
@@ -199,7 +202,208 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   printOrder(): void {
-    window.print();
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    // Format the date
+    const orderDate = this.order?.date && this.order.date !== '0000-00-00'
+      ? new Date(this.order.date)
+      : this.order?.created_at
+        ? new Date(this.order.created_at)
+        : new Date();
+
+    // Generate the print-specific HTML
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Order #${this.order?.id} - Print View</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              margin: 0;
+              padding: 20px;
+            }
+            .print-header {
+              text-align: center;
+              margin-bottom: 30px;
+            }
+            .section {
+              margin-bottom: 30px;
+              break-inside: avoid;
+            }
+            .section-title {
+              font-size: 18px;
+              font-weight: bold;
+              margin-bottom: 15px;
+              padding-bottom: 5px;
+              border-bottom: 2px solid #333;
+            }
+            .info-grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+              margin-bottom: 30px;
+            }
+            .detail-row {
+              margin-bottom: 10px;
+            }
+            .detail-label {
+              font-weight: bold;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-bottom: 20px;
+            }
+            th, td {
+              border: 1px solid #ddd;
+              padding: 12px;
+              text-align: left;
+            }
+            th {
+              background-color: #f5f5f5;
+            }
+            .order-summary {
+              border: 1px solid #ddd;
+              padding: 15px;
+              margin-top: 20px;
+            }
+            .summary-row {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 10px;
+            }
+            .total-row {
+              font-weight: bold;
+              font-size: 16px;
+              border-top: 2px solid #ddd;
+              padding-top: 10px;
+            }
+            @page {
+              size: A4;
+              margin: 20mm;
+            }
+            @media print {
+              .section {
+                break-inside: avoid;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-header">
+            <h1>Order #${this.order?.id}</h1>
+            <p>Date: ${orderDate.toLocaleString()}</p>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Order Details</div>
+            <div class="info-grid">
+              <div>
+                <div class="detail-row">
+                  <span class="detail-label">Status:</span>
+                  <span>${this.order?.statusName || this.order?.status || 'Unknown'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Customer Information</div>
+            <div class="info-grid">
+              <div>
+                <div class="detail-row">
+                  <span class="detail-label">Name:</span>
+                  <span>${this.order?.name || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Email:</span>
+                  <span>${this.order?.email || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Phone:</span>
+                  <span>${this.order?.phoneNumber || 'N/A'}</span>
+                </div>
+              </div>
+              <div>
+                <div class="detail-row">
+                  <span class="detail-label">Address:</span>
+                  <span>${this.order?.address || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">State:</span>
+                  <span>${this.order?.state || 'N/A'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Order Items</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${this.orderItems.map(item => `
+                  <tr>
+                    <td>${item.title || item.name || item.productName || 'N/A'}</td>
+                    <td>${this.getProductPrice(item) > 0 ? this.formatCurrency(this.getProductPrice(item)) : 'N/A'}</td>
+                    <td>${this.getProductQuantity(item) || 'N/A'}</td>
+                    <td>${this.getProductTotal(item) > 0 ? this.formatCurrency(this.getProductTotal(item)) : 'N/A'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+
+            <div class="order-summary">
+              <div class="summary-row">
+                <span>Subtotal:</span>
+                <span>${this.formatCurrency(this.calculateSubtotal())}</span>
+              </div>
+              ${this.order?.shippingCost ? `
+                <div class="summary-row">
+                  <span>Shipping:</span>
+                  <span>${this.formatCurrency(this.order.shippingCost)}</span>
+                </div>
+              ` : ''}
+              <div class="summary-row total-row">
+                <span>Total:</span>
+                <span>${this.formatCurrency(this.calculateTotal())}</span>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    // Write the content to the new window
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+
+    // Wait for images to load before printing
+    printWindow.onload = () => {
+      printWindow.print();
+      // Close the window after printing (optional)
+      // printWindow.close();
+    };
+  }
+
+  private formatCurrency(value: number): string {
+    return new Intl.NumberFormat('en-EG', {
+      style: 'currency',
+      currency: 'EGP',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
   }
 
   tryAgain(): void {
@@ -210,16 +414,28 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   getProductPrice(item: OrderItem): number {
-    return Number(item.discountedPrice) ? Number( item.discountedPrice) : Number(item.originalPrice) | 0 ;
+    if (!item) return 0;
+    // Parse each value as a number, default to 0 if NaN
+    const discounted = parseFloat(String(item.discountedPrice)) || 0;
+    const original = parseFloat(String(item.originalPrice)) || 0;
+    const price = parseFloat(String(item.price)) || 0;
+
+    // Return the first non-zero value
+    return discounted || original || price;
   }
 
   getProductQuantity(item: OrderItem): number {
-    return  Number(item.qty) || 0;
+    if (!item) return 0;
+    // Parse each value as a number, default to 0 if NaN
+    const qty = parseFloat(String(item.qty)) || 0;
+    const quantity = parseFloat(String(item.quantity)) || 0;
+
+    return qty || quantity;
   }
 
   getProductTotal(item: OrderItem): number {
+    if (!item) return 0;
     const price = this.getProductPrice(item);
-    debugger
     const quantity = this.getProductQuantity(item);
     return price * quantity;
   }
@@ -229,16 +445,34 @@ export class OrderDetailsComponent implements OnInit {
       return 0;
     }
 
+    // Use a pure reduce function that doesn't modify component state
     return this.orderItems.reduce((total, item) => {
       return total + this.getProductTotal(item);
     }, 0);
   }
 
   calculateTotal(): number {
+    // Get the subtotal using the pure function
     const subtotal = this.calculateSubtotal();
-    const shipping = Number(this.order?.shippingCost) || 0;
-    const discount = Number(this.order?.discount) || 0;
 
+    // Parse values as numbers with proper error handling
+    const shipping = this.parseShippingCost();
+    const discount = this.parseDiscount();
+
+    // Return the calculated total without modifying component state
     return subtotal + shipping - discount;
+  }
+
+  // Helper methods for the template to avoid linter errors
+  parseShippingCost(): number {
+    return parseFloat(String(this.order?.shippingCost)) || parseFloat(String(this.order?.shipping)) || 0;
+  }
+
+  parseDiscount(): number {
+    return parseFloat(String(this.order?.discount)) || 0;
+  }
+
+  hasDiscount(): boolean {
+    return this.parseDiscount() > 0;
   }
 }

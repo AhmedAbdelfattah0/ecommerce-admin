@@ -43,14 +43,14 @@ import { ToasterService } from '../../../services/toatser.service';
     MatProgressSpinnerModule,
     MatChipsModule,
     BreadcrumbComponent,
-    AddSpaceAfterCurrencyPipe
+
   ],
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss']
 })
 export class OrderListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'email', 'phoneNumber', 'date', 'status', 'statusAr', 'actions'];
-  dataSource = new MatTableDataSource<OrderListItem>([]);
+  dataSource!: MatTableDataSource<OrderListItem>;
   orders: OrderListItem[] = [];
   orderStatuses: OrderStatus[] = [];
   isLoading = false;
@@ -75,11 +75,6 @@ export class OrderListComponent implements OnInit {
     this.loadOrders();
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
   loadOrderStatuses(): void {
     this.orderService.getOrderStatuses().subscribe({
       next: (data) => {
@@ -102,9 +97,7 @@ export class OrderListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.orders = data;
-          console.log(this.orders);
-          this.dataSource.data = this.orders;
-          this.applyFilter();
+          this.initializeDataSource();
         },
         error: (error) => {
           console.error('Error loading orders:', error);
@@ -114,6 +107,40 @@ export class OrderListComponent implements OnInit {
           });
         }
       });
+  }
+
+  initializeDataSource(): void {
+    this.dataSource = new MatTableDataSource(this.orders);
+    // Set up sorting and pagination after view init
+    setTimeout(() => {
+      if (this.sort && this.paginator) {
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+
+        // Add custom sorting data accessor
+        this.dataSource.sortingDataAccessor = (item: OrderListItem, property: string) => {
+          switch (property) {
+            case 'id':
+              return Number(item.id);
+            case 'date':
+              const date = item.date || item.created_at;
+              return date ? new Date(date).getTime() : 0;
+            case 'status':
+              return item.statusName || item.statusLabel || '';
+            case 'statusAr':
+              return item.statusNameAr || '';
+            case 'name':
+              return item.name || '';
+            case 'email':
+              return item.email || '';
+            case 'phoneNumber':
+              return item.phoneNumber || '';
+            default:
+              return '';
+          }
+        };
+      }
+    });
   }
 
   applyFilter(): void {

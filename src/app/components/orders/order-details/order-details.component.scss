@@ -1,17 +1,18 @@
-.container {
+
+
+.print-container {
   padding: 24px;
   max-width: 95%;
   margin: 0 auto;
-  .order-grid{
-    .detail-row{
+  .info-grid, .print-section {
+    .detail-row {
       display: flex;
-       gap: 1rem;
-       align-items: center;
-      .detail-label{
+      gap: 0.51rem;
+      align-items: center;
+      .detail-label {
         font-weight: 500;
       }
     }
-
   }
   .product-image {
     width: 150px;
@@ -23,17 +24,16 @@
     img {
       width: 100%;
       height: 100%;
-       object-fit: cover;
+      object-fit: cover;
     }
   }
 }
-
 .main-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-
+  margin-top: 25px;
   .page-title {
     margin: 0;
     font-size: 28px;
@@ -76,7 +76,8 @@
   margin-top: 20px;
 
   // Full width items
-  .items-card, .notes-card {
+  .items-card,
+  .notes-card {
     grid-column: 1 / -1;
   }
 }
@@ -91,33 +92,34 @@ mat-card {
 
 // Summary Card
 .order-summary {
-  display: flex;
-      margin-top: 1rem;
-       gap: 1rem;
-      flex-direction: column;
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
 
-  .summary-item {
+  .summary-row {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 8px;
 
-    .label {
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.54);
-      margin-bottom: 4px;
+    &:last-child {
+      margin-bottom: 0;
     }
 
-    .value {
-      font-size: 16px;
+    &.total-row {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+      font-weight: 500;
+      font-size: 18px;
 
-      &.total-value {
-        font-weight: 600;
-        font-size: 18px;
+      .summary-value {
         color: #3f51b5;
       }
     }
 
-    .status-value {
-      margin-top: 4px;
+    .summary-label {
+      font-weight: 500;
     }
   }
 }
@@ -261,7 +263,9 @@ mat-card {
     min-width: 300px;
   }
 
-  .mat-column-price, .mat-column-quantity, .mat-column-total {
+  .mat-column-price,
+  .mat-column-quantity,
+  .mat-column-total {
     text-align: right;
   }
 }
@@ -270,8 +274,6 @@ mat-card {
   display: flex;
   align-items: center;
   gap: 16px;
-
-
 
   .product-details {
     flex: 1;
@@ -321,27 +323,297 @@ mat-card {
 
 // Print styles
 @media print {
-  .actions, .status-card {
-    display: none !important;
+
+  * {
+    -webkit-print-color-adjust: exact; /* Ensures colors are printed correctly */
+    print-color-adjust: exact;
   }
 
-  .container {
+  html, body {
+    height: auto;
+    margin: 0;
     padding: 0;
   }
+  @page {
+    size: auto;
+    margin: 20mm;
+  }
 
-  .order-details {
+  // Modern page break classes
+  .page {
+    page-break-before: always; /* or page-break-after, depending on your layout */
+    page-break-inside: avoid;
+    /* Make sure .page is display: block */
+    display: block;
+    width: 100%;
+  }
+
+  /* If you only want the first .page to not break before it */
+  .page:first-child {
+    page-break-before: auto;
+  }
+
+  .order-items-section {
+    page-break-before: always; // Moves the order items section to a new page
+  }
+
+  .print-section {
+    page-break-inside: avoid; // Prevents content from breaking within sections
+  }
+
+  .print-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .print-table-wrapper thead {
+    display: table-header-group; // Ensures the table header repeats on each page
+  }
+
+  .print-table-wrapper tbody {
+    display: table-row-group;
+  }
+
+  .print-container {
     display: block;
   }
 
+
+  // Hide navigation elements
+  ::ng-deep {
+    .mat-drawer-container {
+      .mat-drawer {
+        display: none !important;
+      }
+      .mat-drawer-content {
+        margin-left: 0 !important;
+      }
+    }
+
+    mat-sidenav {
+      display: none !important;
+    }
+
+    mat-toolbar {
+      display: none !important;
+    }
+
+    .mat-sidenav {
+      display: none !important;
+    }
+  }
+
+  // Hide other non-printable elements
+  .no-print,
+  app-header,
+  app-breadcrumb,
+  .actions,
+  .status-update {
+    display: none !important;
+  }
+
+  // Container styles
+  // .print-container {
+  //   width: 100% !important;
+  //   margin: 0 !important;
+  //   padding: 0 !important;
+  // }
+
+  // Table styles
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    thead {
+      display: table-header-group !important;
+    }
+    tr {
+      break-inside: avoid !important;
+    }
+  }
+
+  th, td {
+    padding: 8px !important;
+    text-align: left !important;
+    border: 1px solid #ddd !important;
+  }
+
+  // Product image size
+  .product-image {
+    width: 150px !important;
+    height: 100px !important;
+
+    img {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+  }
+
+  // Card styles
   mat-card {
+    border: 1px solid #ddd !important;
     box-shadow: none !important;
-    border: 1px solid #ddd;
+    margin-bottom: 20px !important;
+    break-inside: avoid !important;
+  }
+
+  // Order summary styles
+  .order-summary {
+    margin-top: 20px !important;
+    border: 1px solid #ddd !important;
+    padding: 16px !important;
+    break-inside: avoid !important;
+  }
+
+  // Color settings
+  * {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
-::ng-deep{
-  .mat-mdc-card-content{
+::ng-deep {
+  .mat-mdc-card-content {
     display: flex !important;
     flex-direction: column !important;
     gap: 1rem !important;
+  }
+}
+
+.status-update {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  mat-form-field {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .status-update-btn {
+    margin-top: 4px;
+  }
+}
+
+// Print/Screen visibility classes
+.print-only {
+  display: none !important;
+}
+
+.no-print {
+  display: block;
+}
+
+@media print {
+  @page {
+    size: auto;
+    margin: 20mm;
+  }
+
+  // Visibility classes
+  .print-only {
+    display: block !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  // Hide navigation elements
+  ::ng-deep {
+    .mat-drawer-container {
+      .mat-drawer {
+        display: none !important;
+      }
+      .mat-drawer-content {
+        margin-left: 0 !important;
+      }
+    }
+
+    mat-sidenav {
+      display: none !important;
+    }
+
+    mat-toolbar {
+      display: none !important;
+    }
+
+    .mat-sidenav {
+      display: none !important;
+    }
+  }
+
+  // Print table styles
+  .print-table-wrapper {
+    width: 100% !important;
+    margin-bottom: 20px !important;
+
+    .print-table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+      margin-bottom: 20px !important;
+
+      th, td {
+        padding: 8px !important;
+        text-align: left !important;
+        border: 1px solid #ddd !important;
+        font-size: 12pt !important;
+      }
+
+      th {
+        background-color: #f5f5f5 !important;
+        font-weight: bold !important;
+      }
+
+      thead {
+        display: table-header-group !important;
+      }
+
+      tr {
+        break-inside: avoid !important;
+      }
+
+      .product-image {
+        width: 150px !important;
+        height: 100px !important;
+
+        img {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+        }
+      }
+    }
+  }
+
+  // Container styles
+  .print-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  // Card styles
+  mat-card {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    margin-bottom: 20px !important;
+    break-inside: avoid !important;
+  }
+
+  // Order summary styles
+  .order-summary {
+    margin-top: 20px !important;
+    border: 1px solid #ddd !important;
+    padding: 16px !important;
+    break-inside: avoid !important;
+  }
+
+  // Color settings
+  * {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
