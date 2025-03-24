@@ -56,7 +56,7 @@ export class SubCategoriesListComponent implements OnInit {
   // Breadcrumb items
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/dashboard' },
-    { label: 'Sub-Categories' }
+    { label: 'Marketing Categories' }
   ];
 
   constructor(

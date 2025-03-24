@@ -1,0 +1,63 @@
+<app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{isEditMode ? 'Edit' : 'Add'}} Banner</mat-card-title>
+      <div class="header-actions">
+        <a routerLink="/banners" mat-button>
+          <mat-icon>arrow_back</mat-icon>
+          Back to Banners
+        </a>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="form-container">
+          <!-- File Upload -->
+          <div class="form-field">
+            <label class="file-upload-label">
+              <input type="file" (change)="onFileSelected($event)" accept="image/*">
+              <span class="file-upload-text">
+                <mat-icon>cloud_upload</mat-icon>
+                {{form.get('file')?.value ? form.get('file')?.value.name : 'Choose Banner Image'}}
+              </span>
+            </label>
+            <div class="preview-container" *ngIf="imagePreview || banner?.fileUrl">
+              <img [src]="imagePreview || banner?.fileUrl" alt="Banner preview" class="image-preview">
+            </div>
+          </div>
+
+          <!-- Visible Toggle -->
+          <div class="form-field">
+            <mat-slide-toggle formControlName="visible">
+              Visible
+            </mat-slide-toggle>
+          </div>
+
+          <!-- Selected Toggle -->
+          <div class="form-field">
+            <mat-slide-toggle formControlName="selected">
+              Selected
+            </mat-slide-toggle>
+          </div>
+
+          <div class="form-actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || (!form.get('file')?.value && !isEditMode)">
+              {{isEditMode ? 'Update' : 'Create'}} Banner
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="loading-container" *ngIf="isLoading">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        <p>{{error}}</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

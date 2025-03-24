@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-
+@use '@angular/material' as mat;
 // Import SCSS files with modern syntax
 @use 'scss/variables';
 @use 'scss/mixins';
@@ -127,10 +127,7 @@ body {
   text-transform: uppercase;
   font-size: 0.8125rem !important;
   line-height: 1rem !important;
-  &:disabled {
-    background-color: #ccc !important;
-    color: #fff !important;
-  }
+
 }
 
 .mat-mdc-raised-button.mat-accent {
@@ -248,4 +245,19 @@ html, body { height: 100%; }
 .mat-drawer {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
+}
+* {
+  font-family: 'Poppins', 'Open Sans', sans-serif;
+}
+html {
+  @include mat.theme((
+     typography: (
+      plain-family:  'Poppins',
+      brand-family: 'Poppins',
+      bold-weight: 900,
+      medium-weight: 500,
+      regular-weight: 300,
+    ),
+
+  ));
 }

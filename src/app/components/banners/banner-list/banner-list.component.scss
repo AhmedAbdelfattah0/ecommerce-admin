@@ -1,0 +1,50 @@
+.table-container {
+  position: relative;
+  min-height: 200px;
+  overflow-x: auto;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  min-width: 800px; /* Minimum width to prevent table from becoming too narrow */
+}
+
+.header-actions {
+  margin-left: auto;
+}
+
+.banner-thumbnail {
+  width: 100px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-message {
+  text-align: center;
+  padding: 20px;
+  color: red;
+}
+
+mat-slide-toggle {
+  margin: 0 8px;
+}
+
+/* Add padding to the card content to prevent scrollbar from overlapping */
+mat-card-content {
+  padding: 16px;
+}

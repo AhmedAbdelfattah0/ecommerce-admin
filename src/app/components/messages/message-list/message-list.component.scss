@@ -1,0 +1,45 @@
+.table-container {
+  position: relative;
+  min-height: 200px;
+}
+
+table {
+  width: 100%;
+}
+
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-message {
+  text-align: center;
+  padding: 20px;
+  color: red;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: capitalize;
+  font-weight: 500;
+  font-size: 12px;
+
+  &.read {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.unread {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+}
