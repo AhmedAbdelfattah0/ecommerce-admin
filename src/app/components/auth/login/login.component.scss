@@ -1,62 +1,307 @@
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(246, 249, 252, 0.97) 0%, rgba(237, 242, 247, 0.97) 100%);
+  padding: 2rem;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://lugarstore.com/uploads/LOGO1-lugar.svg');
+    background-size: 400px;
+    background-position: center;
+    background-repeat: repeat;
+    opacity: 0.03;
+    z-index: 0;
+    animation: subtleFloat 30s linear infinite;
+  }
+}
+
+@keyframes subtleFloat {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 400px 400px;
+  }
 }
 
 .login-card {
   width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
-
-mat-card-header {
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-mat-card-title {
-  font-size: 24px;
-  font-weight: 500;
-}
-
-.full-width {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
-button[type="submit"] {
-  height: 48px;
-  font-size: 16px;
-  margin-top: 16px;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
   position: relative;
-}
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-.spinner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+  }
 
-mat-form-field {
-  margin-bottom: 16px;
-}
-
-mat-icon {
-  cursor: pointer;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #0ea5e9, #8b5cf6, #f59e0b);
+  }
 }
 
 .logo-container {
   text-align: center;
-  margin-bottom: 24px;
-  padding: 20px;
+  padding: 2.5rem 2rem 2rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+    border-radius: 3px;
+    opacity: 0.3;
+  }
+
+  img {
+    height: 60px;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  p {
+    color: #666;
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+  }
 }
 
-.logo {
-  max-width: 200px;
-  height: auto;
+.login-form {
+  padding: 2rem;
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #4a5568;
+      transition: color 0.2s ease;
+    }
+
+    .input-container {
+      position: relative;
+
+      input {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        color: #1a1a1a;
+        background: rgba(248, 250, 252, 0.8);
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #0ea5e9;
+          background: white;
+          box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
+
+          & + .password-toggle {
+            color: #0ea5e9;
+          }
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+        }
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: #0ea5e9;
+        }
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .error-message {
+      color: #dc2626;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      opacity: 0;
+      transform: translateY(-10px);
+      animation: slideDown 0.2s ease forwards;
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  .login-button {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: 0.5s;
+    }
+
+    &:hover {
+      background: linear-gradient(90deg, #0284c7, #0ea5e9);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+      transform: translateY(-1px);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      background: #e2e8f0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive styles
+@media (max-width: 480px) {
+  .login-container {
+    padding: 1rem;
+
+    &::before {
+      background-size: 300px;
+    }
+  }
+
+  .login-card {
+    border-radius: 16px;
+  }
+
+  .logo-container {
+    padding: 2rem 1.5rem 1.5rem;
+
+    img {
+      height: 50px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .login-form {
+    padding: 1.5rem;
+  }
 }

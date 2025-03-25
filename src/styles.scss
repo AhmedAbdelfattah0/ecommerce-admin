@@ -261,3 +261,38 @@ html {
 
   ));
 }
+
+// Notification Dialog Styles
+.notification-dialog {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+
+  .mat-mdc-dialog-container {
+    padding: 0 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .mat-mdc-dialog-surface {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+}
+
+// Animation for notification icon
+@keyframes notification-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

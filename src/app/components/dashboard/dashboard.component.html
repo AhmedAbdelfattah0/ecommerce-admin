@@ -1,31 +1,36 @@
-<div class="container">
-  <h1 class="page-title">Dashboard</h1>
-  <p class="page-subtitle">Store performance overview</p>
-
-  <div *ngIf="isLoading" class="loading-container">
-    <mat-spinner diameter="40"></mat-spinner>
+<div class="container" [@fadeAnimation]>
+  <div class="header-section" [@slideInAnimation]>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Store performance overview</p>
+    <button mat-icon-button class="refresh-button" (click)="refreshData()" [@rotateAnimation]="refreshTrigger">
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
 
-  <div *ngIf="error" class="error-container">
+  <div *ngIf="isLoading" class="loading-container" [@fadeAnimation]>
+    <mat-spinner diameter="40" color="primary"></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-container" [@bounceAnimation]>
     <p>{{ error }}</p>
   </div>
 
-  <div *ngIf="!isLoading && !error" class="dashboard-content">
+  <div *ngIf="!isLoading && !error" class="dashboard-content" [@fadeAnimation]>
     <!-- Statistics Cards -->
     <div class="dashboard-section">
-      <h2 class="section-title">Store Statistics</h2>
-      <div class="dashboard-cards">
-        <mat-card appearance="outlined" class="dashboard-card">
+      <h2 class="section-title" [@slideInAnimation]>Store Statistics</h2>
+      <div class="dashboard-cards" [@listAnimation]="dashboardData.length">
+        <mat-card appearance="outlined" class="dashboard-card" [@cardAnimation] [@pulseAnimation]="refreshTrigger">
           <mat-card-header>
             <mat-card-title>TOTAL SALES</mat-card-title>
             <mat-card-subtitle>All time revenue</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
-            <div class="metric-value">{{ dashboardData.total_sales | currency }}</div>
+            <div class="metric-value large-number">{{ dashboardData.total_sales | currency : 'EGP' : 'symbol'   }}</div>
           </mat-card-content>
         </mat-card>
 
-        <mat-card appearance="outlined" class="dashboard-card">
+        <mat-card appearance="outlined" class="dashboard-card" [@cardAnimation] [@pulseAnimation]="refreshTrigger">
           <mat-card-header>
             <mat-card-title>TOTAL ORDERS</mat-card-title>
             <mat-card-subtitle>All orders</mat-card-subtitle>
@@ -35,7 +40,7 @@
           </mat-card-content>
         </mat-card>
 
-        <mat-card appearance="outlined" class="dashboard-card">
+        <mat-card appearance="outlined" class="dashboard-card" [@cardAnimation] [@pulseAnimation]="refreshTrigger">
           <mat-card-header>
             <mat-card-title>NEW MESSAGES</mat-card-title>
             <mat-card-subtitle>Unread messages</mat-card-subtitle>
@@ -45,7 +50,7 @@
           </mat-card-content>
         </mat-card>
 
-        <mat-card appearance="outlined" class="dashboard-card">
+        <mat-card appearance="outlined" class="dashboard-card" [@cardAnimation] [@pulseAnimation]="refreshTrigger">
           <mat-card-header>
             <mat-card-title>CATEGORIES</mat-card-title>
             <mat-card-subtitle>Total categories</mat-card-subtitle>
@@ -61,72 +66,76 @@
     </div>
 
     <!-- Tables Section -->
-    <div class="dashboard-tables">
+    <div class="dashboard-tables" [@listAnimation]="dashboardData.length">
       <!-- Recent Orders -->
-      <mat-card appearance="outlined" class="table-card">
+      <mat-card appearance="outlined" class="table-card" [@cardAnimation]>
         <mat-card-header>
           <mat-card-title>RECENT ORDERS</mat-card-title>
           <mat-card-subtitle>Last 5 orders</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <table mat-table [dataSource]="dashboardData.recent_orders" class="recent-orders-table">
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef>Order ID</th>
-              <td mat-cell *matCellDef="let order">#{{ order.id }}</td>
-            </ng-container>
+          <div class="table-container">
+            <table mat-table [dataSource]="dashboardData.recent_orders" class="recent-orders-table">
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>Order ID</th>
+                <td mat-cell *matCellDef="let order" [@tableRowAnimation]>#{{ order.id }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="customer">
-              <th mat-header-cell *matHeaderCellDef>Customer</th>
-              <td mat-cell *matCellDef="let order">
-                <div class="customer-info">
-                  <span class="customer-name">{{ order.customer_name }}</span>
-                  <span class="customer-contact">{{ order.email }}</span>
-                  <span class="customer-contact">{{ order.phoneNumber }}</span>
-                </div>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="customer">
+                <th mat-header-cell *matHeaderCellDef>Customer</th>
+                <td mat-cell *matCellDef="let order" [@tableRowAnimation]>
+                  <div class="customer-info">
+                    <span class="customer-name">{{ order.customer_name }}</span>
+                    <span class="customer-contact">{{ order.email }}</span>
+                    <span class="customer-contact">{{ order.phoneNumber }}</span>
+                  </div>
+                </td>
+              </ng-container>
 
-            <ng-container matColumnDef="date">
-              <th mat-header-cell *matHeaderCellDef>Date</th>
-              <td mat-cell *matCellDef="let order">{{ order.created_at | date }}</td>
-            </ng-container>
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>Date</th>
+                <td mat-cell *matCellDef="let order" [@tableRowAnimation]>{{ order.created_at | date }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="total">
-              <th mat-header-cell *matHeaderCellDef>Total</th>
-              <td mat-cell *matCellDef="let order">{{ order.total_amount | currency }}</td>
-            </ng-container>
+              <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef>Total</th>
+                <td mat-cell *matCellDef="let order" [@tableRowAnimation]>{{ order.total_amount | currency }}</td>
+              </ng-container>
 
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Status</th>
-              <td mat-cell *matCellDef="let order">
-                <span [class]="'status-badge ' + getStatusClass(order.statusId)">
-                  {{ getStatusText(order.statusId) }}
-                </span>
-              </td>
-            </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let order" [@tableRowAnimation]>
+                  <span [class]="'status-badge ' + getStatusClass(order.statusId)">
+                    {{ getStatusText(order.statusId) }}
+                  </span>
+                </td>
+              </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="['id', 'customer', 'date', 'total', 'status']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['id', 'customer', 'date', 'total', 'status'];"></tr>
-          </table>
+              <tr mat-header-row *matHeaderRowDef="['id', 'customer', 'date', 'total', 'status']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['id', 'customer', 'date', 'total', 'status'];" [@tableRowAnimation]></tr>
+            </table>
+          </div>
         </mat-card-content>
       </mat-card>
 
       <!-- Top Products -->
-      <mat-card appearance="outlined" class="table-card">
+      <mat-card appearance="outlined" class="table-card" [@cardAnimation]>
         <mat-card-header>
           <mat-card-title>TOP PRODUCTS</mat-card-title>
           <mat-card-subtitle>Most popular items</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <table mat-table [dataSource]="dashboardData.top_products" class="top-products-table">
-            <ng-container matColumnDef="product">
-              <th mat-header-cell *matHeaderCellDef>Product</th>
-              <td mat-cell *matCellDef="let product">{{ product }}</td>
-            </ng-container>
+          <div class="table-container">
+            <table mat-table [dataSource]="dashboardData.top_products" class="top-products-table">
+              <ng-container matColumnDef="product">
+                <th mat-header-cell *matHeaderCellDef>Product</th>
+                <td mat-cell *matCellDef="let product" [@tableRowAnimation]>{{ product }}</td>
+              </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="['product']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['product'];"></tr>
-          </table>
+              <tr mat-header-row *matHeaderRowDef="['product']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['product'];" [@tableRowAnimation]></tr>
+            </table>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>

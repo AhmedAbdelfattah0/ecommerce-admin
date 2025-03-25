@@ -32,15 +32,7 @@ export const routes: Routes = [
     ],
     canActivate: [AuthGuard]
   },
-  // {
-  //   path: 'sub-categories',
-  //   children: [
-  //     { path: '', loadComponent: () => import('./components/sub-categories/sub-categories-list/sub-categories-list.component').then(m => m.SubCategoriesListComponent) },
-  //     { path: 'new', loadComponent: () => import('./components/sub-categories/sub-category-form/sub-category-form.component').then(m => m.SubCategoryFormComponent) },
-  //     { path: 'edit/:id', loadComponent: () => import('./components/sub-categories/sub-category-form/sub-category-form.component').then(m => m.SubCategoryFormComponent) }
-  //   ],
-  //   canActivate: [AuthGuard]
-  // },
+
   {
     path: 'orders',
     children: [

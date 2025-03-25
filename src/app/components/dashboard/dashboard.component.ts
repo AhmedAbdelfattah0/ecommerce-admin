@@ -3,15 +3,44 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { Subscription } from 'rxjs';
+import {
+  fadeAnimation,
+  listAnimation,
+  cardAnimation,
+  tableRowAnimation,
+  pulseAnimation,
+  bounceAnimation,
+  slideInAnimation,
+  rotateAnimation
+} from '../../shared/animations';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatProgressSpinnerModule]
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatIconModule,
+    MatButtonModule
+  ],
+  animations: [
+    fadeAnimation,
+    listAnimation,
+    cardAnimation,
+    tableRowAnimation,
+    pulseAnimation,
+    bounceAnimation,
+    slideInAnimation,
+    rotateAnimation
+  ]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   // Dashboard metrics
@@ -25,6 +54,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Loading states
   isLoading = true;
   error: string | null = null;
+  refreshTrigger = true; // Used for pulse animation
 
   // Recent orders
   recentOrders: any[] = [];
@@ -65,6 +95,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (response) => {
         if (response.status && response.data) {
           this.dashboardData = response.data;
+          this.refreshTrigger = !this.refreshTrigger; // Toggle to trigger pulse animation
         }
         this.isLoading = false;
       },
@@ -77,22 +108,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getStatusText(statusId: number): string {
-    switch (statusId) {
-      case 1: return 'Pending';
-      case 2: return 'Processing';
-      case 3: return 'Completed';
-      case 4: return 'Cancelled';
-      default: return 'Unknown';
-    }
+    const statusMap: { [key: number]: string } = {
+      1: 'Pending',
+      2: 'Processing',
+      3: 'Completed',
+      4: 'Cancelled'
+    };
+    return statusMap[statusId] || 'Unknown';
   }
 
   getStatusClass(statusId: number): string {
-    switch (statusId) {
-      case 1: return 'pending';
-      case 2: return 'processing';
-      case 3: return 'completed';
-      case 4: return 'cancelled';
-      default: return '';
-    }
+    const classMap: { [key: number]: string } = {
+      1: 'pending',
+      2: 'processing',
+      3: 'completed',
+      4: 'cancelled'
+    };
+    return classMap[statusId] || '';
+  }
+
+  // Animation helper methods
+  trackByFn(index: number): number {
+    return index;
+  }
+
+  refreshData(): void {
+    this.loadDashboardData();
   }
 }

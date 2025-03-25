@@ -1,8 +1,9 @@
 .container {
   padding: 2rem;
   background-color: #f8f9fa;
-  max-width: 95%;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .page-title {
@@ -51,12 +52,21 @@
 
 .dashboard-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
 
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
   .dashboard-card {
     height: 100%;
+    min-width: 0;
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     border: none;
     border-radius: 12px;
@@ -100,7 +110,6 @@
     }
 
     mat-card-header {
-      margin-bottom: 1rem;
       padding: 1.5rem 1.5rem 0;
 
       mat-card-title {
@@ -116,14 +125,23 @@
     }
 
     mat-card-content {
-      padding: 0 1.5rem 1.5rem;
+      padding: 1rem 1.5rem 1.5rem;
     }
 
     .metric-value {
-      font-size: 2.5rem;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
       font-weight: 600;
       margin-bottom: 0.5rem;
       line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      // Format large numbers with smaller font
+      &.large-number {
+        font-size: clamp(1.25rem, 3vw, 2rem);
+        letter-spacing: -0.5px;
+      }
     }
 
     .metric-subtitle {
@@ -166,16 +184,18 @@
 
 .dashboard-tables {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 600px), 1fr));
+  gap: 1.5rem;
+  width: 100%;
 
   .table-card {
     background: white;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    width: 100%;
+    overflow: hidden;
 
     mat-card-header {
-      margin-bottom: 1rem;
       padding: 1.5rem 1.5rem 1rem;
       border-bottom: 1px solid #f0f0f0;
 
@@ -193,11 +213,33 @@
     }
 
     mat-card-content {
-      padding: 0 1.5rem 1.5rem;
+      padding: 0;
+      overflow-x: auto;
+
+      &::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+      }
     }
 
     table {
       width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        white-space: nowrap;
+        border-bottom: 1px solid #f0f0f0;
+      }
 
       th {
         font-size: 0.75rem;
@@ -205,13 +247,29 @@
         color: #666;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        padding: 1rem;
+        background: #fafafa;
       }
 
       td {
         font-size: 0.875rem;
         color: #1a1a1a;
-        padding: 1rem;
+      }
+
+      .customer-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 200px;
+
+        .customer-name {
+          font-weight: 500;
+          color: #1a1a1a;
+        }
+
+        .customer-contact {
+          font-size: 0.75rem;
+          color: #666;
+        }
       }
 
       .status-badge {
@@ -246,24 +304,87 @@
   }
 }
 
+// Responsive adjustments
+@media (max-width: 1200px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+  }
+
+  .dashboard-cards .dashboard-card {
+    .metric-value {
+      font-size: clamp(1.25rem, 3vw, 2rem);
+
+      &.large-number {
+        font-size: clamp(1rem, 2.5vw, 1.75rem);
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
   }
 
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.875rem;
+    margin: 0.5rem 0 1.5rem;
+  }
+
   .dashboard-cards {
-    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .dashboard-card {
+      .metric-value {
+        font-size: 1.75rem;
+
+        &.large-number {
+          font-size: 1.5rem;
+        }
+      }
+    }
   }
 
   .dashboard-tables {
-    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    .table-card {
+      border-radius: 8px;
+
+      mat-card-header {
+        padding: 1rem;
+      }
+
+      table {
+        th, td {
+          padding: 0.75rem 1rem;
+        }
+
+        .customer-info {
+          min-width: 180px;
+        }
+      }
+    }
   }
+}
 
-  .table-card {
-    overflow-x: auto;
+@media (max-width: 480px) {
+  .dashboard-cards .dashboard-card {
+    .metric-value {
+      font-size: 1.5rem;
 
-    table {
-      min-width: 600px;
+      &.large-number {
+        font-size: 1.25rem;
+      }
     }
   }
 }

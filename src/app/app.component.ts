@@ -11,6 +11,7 @@ import { HeaderComponent } from './components/layout/header/header.component';
 import { SideNavComponent } from './components/layout/side-nav/side-nav.component';
 import { AuthService } from './services/auth/auth.service';
 import { LayoutService } from './services/layout/layout.service';
+import { NotificationService } from './services/notification/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +39,8 @@ export class AppComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private layoutService: LayoutService
+    private layoutService: LayoutService,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit() {
@@ -56,6 +58,9 @@ export class AppComponent implements OnInit {
     this.layoutService.sideNavOpen$.subscribe(
       isOpen => this.isSideNavOpen = isOpen
     );
+
+    // Start checking for new orders
+    this.notificationService.startNewOrdersCheck();
   }
 
   private updateAuthState() {
