@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LayoutService } from '../../../services/layout/layout.service';
+import { NotificationService, Notification } from '../../../services/notification/notification.service';
 
 @Component({
   selector: 'app-header',
@@ -17,74 +21,86 @@ import { LayoutService } from '../../../services/layout/layout.service';
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
+    MatBadgeModule,
+    MatDividerModule,
+    MatTooltipModule
   ],
-  template: `
-    <mat-toolbar color="primary">
-      <button mat-icon-button (click)="toggleSideNav()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <div class="logo-container">
-        <img
-          src="https://lugarstore.com/uploads/modified_logo.svg"
-          alt="Lugare Store"
-          class="logo"
-          (error)="handleImageError($event)"
-          [ngStyle]="{'display': imageLoaded ? 'block' : 'none'}"
-          (load)="onImageLoad()"
-        >
-        <div *ngIf="!imageLoaded && !imageError" class="logo-placeholder">Loading...</div>
-        <div *ngIf="imageError" class="logo-error">Unable to load logo</div>
-      </div>
-      <span class="spacer"></span>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>account_circle</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Logout</span>
-        </button>
-      </mat-menu>
-    </mat-toolbar>
-  `,
-  styles: [`
-    .spacer {
-      flex: 1 1 auto;
-    }
-
-    .logo-container {
-      display: flex;
-      align-items: center;
-      margin-left: 16px;
-    }
-
-    .logo {
-      height: 40px;
-      width: auto;
-      object-fit: contain;
-    }
-
-    .logo-placeholder,
-    .logo-error {
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.7);
-      margin-left: 16px;
-    }
-
-    .logo-error {
-      color: #ffcdd2;
-    }
-  `]
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  private readonly SOUND_PREFERENCE_KEY = 'notification_sound_enabled';
   imageLoaded = false;
   imageError = false;
+  unreadCount = 0;
+  notifications: Notification[] = [];
+  soundEnabled = false;
 
   constructor(
     private authService: AuthService,
     private layoutService: LayoutService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private notificationService: NotificationService
+  ) {
+    // Load sound preference from localStorage
+    this.loadSoundPreference();
+  }
+
+  ngOnInit(): void {
+    // Subscribe to notifications
+    this.notificationService.notifications$.subscribe(notifications => {
+      this.notifications = notifications;
+      this.unreadCount = notifications.filter(n => n.is_read === 0).length;
+    });
+  }
+
+  private loadSoundPreference(): void {
+    const savedPreference = localStorage.getItem(this.SOUND_PREFERENCE_KEY);
+    if (savedPreference !== null) {
+      this.soundEnabled = savedPreference === 'true';
+      // Apply the saved preference
+      if (this.soundEnabled) {
+        this.notificationService.enableSound();
+      } else {
+        this.notificationService.disableSound();
+      }
+    }
+  }
+
+  private saveSoundPreference(enabled: boolean): void {
+    localStorage.setItem(this.SOUND_PREFERENCE_KEY, enabled.toString());
+  }
+
+  toggleSound(): void {
+    this.soundEnabled = !this.soundEnabled;
+    if (this.soundEnabled) {
+      this.notificationService.enableSound();
+    } else {
+      this.notificationService.disableSound();
+    }
+    // Save the new preference
+    this.saveSoundPreference(this.soundEnabled);
+  }
+
+  handleNotificationClick(notification: Notification): void {
+    // Mark notification as read
+    this.notificationService.markNotificationAsRead(notification.id).subscribe();
+
+    // Navigate based on notification type
+    switch (notification.type) {
+      case 'order':
+        this.router.navigate(['/orders']);
+        break;
+      case 'message':
+        this.router.navigate(['/messages']);
+        break;
+    }
+  }
+
+  viewAllNotifications(): void {
+    // Navigate to notifications page or show all notifications
+    this.router.navigate(['/notifications']);
+  }
 
   toggleSideNav(): void {
     this.layoutService.toggleSideNav();
@@ -97,10 +113,12 @@ export class HeaderComponent {
 
   handleImageError(event: Event) {
     this.imageError = true;
+    this.imageLoaded = true;
     console.error('Error loading logo:', event);
   }
 
   onImageLoad() {
     this.imageLoaded = true;
+    this.imageError = false;
   }
 }

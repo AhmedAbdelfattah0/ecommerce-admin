@@ -58,9 +58,10 @@ export class AppComponent implements OnInit {
     this.layoutService.sideNavOpen$.subscribe(
       isOpen => this.isSideNavOpen = isOpen
     );
-
     // Start checking for new orders
-    this.notificationService.startNewOrdersCheck();
+    if (this.authService.isAuthenticated()) {
+      this.notificationService.startNotificationsCheck()
+     }
   }
 
   private updateAuthState() {

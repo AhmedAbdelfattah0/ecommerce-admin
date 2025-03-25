@@ -1,0 +1,20 @@
+<div class="notification-toast" [@slideIn]>
+  <div class="notification-content">
+    <div class="notification-header">
+      <div class="icon-wrapper">
+        <mat-icon>{{ getNotificationIcon() }}</mat-icon>
+      </div>
+      <h2>{{ getNotificationTitle() }}</h2>
+      <button mat-icon-button class="close-button" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <p>{{ notification.message }}</p>
+    <div class="notification-footer">
+      <span class="notification-time">{{ formatTime(notification.created_at) }}</span>
+      <button mat-button color="primary" (click)="onAction()">
+        {{ getActionButtonText() }}
+      </button>
+    </div>
+  </div>
+</div>

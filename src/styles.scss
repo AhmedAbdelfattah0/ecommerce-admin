@@ -296,3 +296,107 @@ html {
     opacity: 1;
   }
 }
+
+// Header notification badge styles
+.notification-button {
+  .mat-badge-content {
+    font-family: var(--font-family) !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    line-height: 18px !important;
+    right: -8px !important;
+    top: -8px !important;
+  }
+
+  .mat-badge-small {
+    .mat-badge-content {
+      min-width: 16px !important;
+      height: 16px !important;
+      line-height: 16px !important;
+    }
+  }
+
+  .mat-badge-warn .mat-badge-content {
+    background-color: var(--warning-color) !important;
+  }
+}
+
+// Enhanced notification pulse animation
+@keyframes notification-badge-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+    box-shadow: 0 0 8px var(--warning-color);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// Notifications Menu Styles
+.notifications-menu {
+  .mat-mdc-menu-content {
+    padding: 0 !important;
+  }
+
+  .mat-mdc-menu-panel {
+    max-width: 360px !important;
+    min-width: 320px !important;
+    max-height: 80vh !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    margin-top: 8px !important;
+    background-color: var(--card-background) !important;
+    box-shadow: var(--shadow) !important;
+    border: 1px solid var(--border-color) !important;
+  }
+
+  .mat-mdc-menu-item {
+    height: auto !important;
+    line-height: 1.4 !important;
+    padding: 8px 16px !important;
+
+    &:hover {
+      background-color: rgba(var(--primary-color-rgb), 0.04) !important;
+    }
+  }
+}
+
+// Notification Item Animation
+@keyframes notification-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification-item {
+  animation: notification-item-in 0.3s ease-out;
+}
+
+// Custom Scrollbar for Notifications
+.notifications-container {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--text-hint);
+    border-radius: 4px;
+  }
+}
