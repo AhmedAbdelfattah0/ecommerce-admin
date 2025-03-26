@@ -22,4 +22,8 @@ export class MobileNavSheetComponent {
     this.router.navigate([route]);
     this.bottomSheetRef.dismiss();
   }
+
+  isActive(route: string): boolean {
+    return this.router.url.startsWith(route);
+  }
 }
