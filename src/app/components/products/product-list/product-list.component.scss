@@ -1,9 +1,19 @@
+@use '../../../../scss/global' as *;
+
 .container {
   padding: 20px;
   max-width: 100%;
   margin: 0 auto;
   .main-header{
     margin-bottom: 1rem;
+    @include respond-below(md) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+  }
+  @include respond-below(md) {
+    max-width: 100% !important;
   }
 }
 

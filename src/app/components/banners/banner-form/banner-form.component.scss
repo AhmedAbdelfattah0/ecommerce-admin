@@ -1,6 +1,10 @@
+@use '../../../../scss/global' as *;
 .container {
   max-width: 800px;
   margin: 0 auto;
+  @include respond-below(md) {
+    max-width: 100% !important;
+  }
 }
 
 .header-actions {

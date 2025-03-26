@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,10 +7,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { LayoutService } from '../../../services/layout/layout.service';
 import { NotificationService, Notification } from '../../../services/notification/notification.service';
+import { MobileNavSheetComponent } from '../mobile-nav/mobile-nav-sheet.component';
 
 @Component({
   selector: 'app-header',
@@ -35,19 +37,29 @@ export class HeaderComponent implements OnInit {
   unreadCount = 0;
   notifications: Notification[] = [];
   soundEnabled = false;
+  isMobile = false;
 
   constructor(
     private authService: AuthService,
     private layoutService: LayoutService,
     private router: Router,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private bottomSheet: MatBottomSheet
   ) {
-    // Load sound preference from localStorage
     this.loadSoundPreference();
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.isMobile = window.innerWidth < 768; // Breakpoint for mobile devices
   }
 
   ngOnInit(): void {
-    // Subscribe to notifications
     this.notificationService.notifications$.subscribe(notifications => {
       this.notifications = notifications;
       this.unreadCount = notifications.filter(n => n.is_read === 0).length;
@@ -103,7 +115,17 @@ export class HeaderComponent implements OnInit {
   }
 
   toggleSideNav(): void {
-    this.layoutService.toggleSideNav();
+    if (this.isMobile) {
+      this.openMobileNav();
+    } else {
+      this.layoutService.toggleSideNav();
+    }
+  }
+
+  private openMobileNav(): void {
+    this.bottomSheet.open(MobileNavSheetComponent, {
+      panelClass: 'mobile-nav-sheet'
+    });
   }
 
   logout(): void {

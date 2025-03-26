@@ -4,7 +4,7 @@
   <div class="main-header flex justify-between align-center">
     <h1 class="page-title">Marketing Categories</h1>
     <div class="actions">
-      <a [routerLink]="['/sub-categories/new']" mat-raised-button color="primary" class="add-btn">
+      <a [routerLink]="['/marketing-categories/new']" mat-raised-button color="primary" class="add-btn">
         <mat-icon>add</mat-icon> Add Marketing Category
       </a>
     </div>
@@ -49,7 +49,7 @@
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let subCategory">
               <div class="actions-cell">
-                <a [routerLink]="['/sub-categories/edit', subCategory.id]" mat-icon-button color="primary" title="Edit">
+                <a [routerLink]="['/marketing-categories/edit', subCategory.id]" mat-icon-button color="primary" title="Edit">
                   <mat-icon>edit</mat-icon>
                 </a>
                 <button mat-icon-button color="warn" (click)="deleteSubCategory(subCategory.id)" title="Delete">

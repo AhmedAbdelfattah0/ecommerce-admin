@@ -12,6 +12,7 @@ import { SideNavComponent } from './components/layout/side-nav/side-nav.componen
 import { AuthService } from './services/auth/auth.service';
 import { LayoutService } from './services/layout/layout.service';
 import { NotificationService } from './services/notification/notification.service';
+import { ResponsiveService } from './common/services/responsive.service';
 
 @Component({
   selector: 'app-root',
@@ -35,13 +36,15 @@ export class AppComponent implements OnInit {
   title = 'lugare-store-admin';
   isAuthenticated = false;
   isSideNavOpen = true;
+  isMobile = false;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private layoutService: LayoutService,
-    private notificationService: NotificationService
-  ) { }
+    private notificationService: NotificationService,
+    private responsiveService: ResponsiveService
+  ) {}
 
   ngOnInit() {
     // Check initial auth state
@@ -58,10 +61,16 @@ export class AppComponent implements OnInit {
     this.layoutService.sideNavOpen$.subscribe(
       isOpen => this.isSideNavOpen = isOpen
     );
+
+    // Subscribe to responsive changes
+    this.responsiveService.isMobile$.subscribe(
+      isMobile => this.isMobile = isMobile
+    );
+
     // Start checking for new orders
     if (this.authService.isAuthenticated()) {
-      this.notificationService.startNotificationsCheck()
-     }
+      this.notificationService.startNotificationsCheck();
+    }
   }
 
   private updateAuthState() {

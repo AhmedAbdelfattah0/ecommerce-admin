@@ -1,0 +1,162 @@
+@use '../../../../scss/global' as *;
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  @include respond-below(md) {
+    max-width: 100% !important;
+    padding: 0 12px;
+  }
+}
+
+mat-card {
+  margin: 16px 0;
+
+  @include respond-below(md) {
+    margin: 12px 0;
+  }
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+
+  @include respond-below(md) {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  mat-card-title {
+    margin: 0;
+    font-size: 24px;
+
+    @include respond-below(md) {
+      font-size: 20px;
+    }
+  }
+}
+
+.header-actions {
+  margin-left: auto;
+
+  @include respond-below(sm) {
+    width: 100%;
+    margin-left: 0;
+
+    a {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+}
+
+.message-details {
+  padding: 20px;
+
+  @include respond-below(md) {
+    padding: 12px;
+  }
+}
+
+.detail-row {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  @include respond-below(sm) {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+}
+
+.label {
+  font-weight: 500;
+  min-width: 100px;
+  color: rgba(0, 0, 0, 0.6);
+
+  @include respond-below(sm) {
+    min-width: unset;
+  }
+}
+
+.value {
+  flex: 1;
+  word-break: break-word;
+
+  @include respond-below(sm) {
+    width: 100%;
+  }
+}
+
+.message-content {
+  margin-top: 24px;
+
+  @include respond-below(sm) {
+    margin-top: 16px;
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 8px;
+  }
+}
+
+.message-text {
+  white-space: pre-wrap;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+  margin-top: 8px;
+  line-height: 1.5;
+
+  @include respond-below(md) {
+    padding: 12px;
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: capitalize;
+  font-weight: 500;
+  font-size: 12px;
+
+  &.read {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.unread {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.error-message {
+  text-align: center;
+  padding: 20px;
+  color: red;
+
+  @include respond-below(md) {
+    padding: 16px;
+  }
+
+  button {
+    margin-top: 12px;
+  }
+}

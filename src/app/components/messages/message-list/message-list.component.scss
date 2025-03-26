@@ -3,8 +3,70 @@
   min-height: 200px;
 }
 
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; // For smooth scrolling on iOS
+  margin-bottom: 0; // Remove bottom margin to connect with paginator
+
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+}
+
 table {
   width: 100%;
+  min-width: 800px; // Minimum width to prevent squishing
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: 12px;
+
+    @media screen and (max-width: 768px) {
+      padding: 8px;
+    }
+  }
+
+  // Column specific widths
+  .mat-column-id {
+    width: 70px;
+    min-width: 70px;
+  }
+
+  .mat-column-name {
+    min-width: 120px;
+  }
+
+  .mat-column-email {
+    min-width: 180px;
+  }
+
+  .mat-column-subject {
+    min-width: 200px;
+  }
+
+  .mat-column-created_at {
+    min-width: 160px;
+  }
+
+  .mat-column-status {
+    min-width: 100px;
+  }
+
+  .mat-column-actions {
+    width: 70px;
+    min-width: 70px;
+  }
 }
 
 .loading-container {
@@ -42,4 +104,10 @@ table {
     background-color: #e3f2fd;
     color: #1976d2;
   }
+}
+
+// Make sure paginator stays at the bottom and full width
+mat-paginator {
+  width: 100%;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }

@@ -1,24 +1,97 @@
-.table-container {
-  position: relative;
-  min-height: 200px;
-  overflow-x: auto;
+@use '../../../../scss/global' as *;
+
+.container {
+  padding: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  .main-header{
+    margin-bottom: 1rem;
+    @include respond-below(md) {
+      flex-direction: column !important;
+      align-items: flex-start;
+      gap: 2rem;
+    }
+  }
+  @include respond-below(md) {
+    max-width: 100% !important;
+  }
+}
+
+.table-wrapper {
   width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 0;
+
+  // Custom scrollbar styling
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+
+    &:hover {
+      background: #666;
+    }
+  }
 }
 
 table {
   width: 100%;
-  min-width: 800px; /* Minimum width to prevent table from becoming too narrow */
+  min-width: 800px;
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    padding: 12px;
+
+    @include respond-below(md) {
+      padding: 8px;
+    }
+  }
+
+  // Column specific widths
+  .mat-column-image {
+    width: 120px;
+    min-width: 120px;
+  }
+
+  .mat-column-title {
+    min-width: 200px;
+  }
+
+  .mat-column-status {
+    min-width: 100px;
+  }
+
+  .mat-column-actions {
+    width: 100px;
+    min-width: 100px;
+  }
 }
 
-.header-actions {
-  margin-left: auto;
-}
-
-.banner-thumbnail {
+.banner-image {
   width: 100px;
   height: 60px;
-  object-fit: cover;
   border-radius: 4px;
+  overflow: hidden;
+
+  @include respond-below(md) {
+    width: 80px;
+    height: 48px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .loading-container {
@@ -38,6 +111,56 @@ table {
   text-align: center;
   padding: 20px;
   color: red;
+
+  @include respond-below(md) {
+    padding: 16px;
+  }
+}
+
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  @include respond-below(sm) {
+    flex-direction: column;
+    gap: 12px;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+mat-card {
+  margin: 16px 0;
+
+  @include respond-below(md) {
+    margin: 12px 0;
+  }
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+
+  @include respond-below(md) {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  mat-card-title {
+    margin: 0;
+    font-size: 24px;
+
+    @include respond-below(md) {
+      font-size: 20px;
+    }
+  }
 }
 
 mat-slide-toggle {

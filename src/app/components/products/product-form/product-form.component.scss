@@ -1,3 +1,5 @@
+@use '../../../../scss/global' as *;
+
 .product-form {
   display: flex;
   flex-direction: column;
@@ -40,6 +42,10 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   margin-bottom: 8px;
+  @include respond-below(md) {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 
 .image-preview-label {
@@ -153,6 +159,10 @@ button.mat-mdc-button {
 
 .mat-mdc-card{
   margin: 2rem;
+  @include respond-below(md) {
+    max-width: 100% !important;
+    margin: 0;
+  }
  }
 
 .breadcrumb {
@@ -186,7 +196,10 @@ button.mat-mdc-button {
 
 .container {
   padding: 20px;
-  max-width: 95%
+  max-width: 95%;
+  @include respond-below(md) {
+    max-width: 100% !important;
+  }
 }
 
 ::ng-deep .mat-mdc-form-field:not(.mat-form-field-disabled) .mat-mdc-floating-label.mdc-floating-label{

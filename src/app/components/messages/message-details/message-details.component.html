@@ -1,0 +1,53 @@
+<app-breadcrumb [items]="breadcrumbItems"></app-breadcrumb>
+
+<div class="container" *ngIf="message">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Message Details</mat-card-title>
+      <div class="header-actions">
+        <a routerLink="/messages" mat-button>
+          <mat-icon>arrow_back</mat-icon>
+          Back to Messages
+        </a>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="message-details">
+        <div class="detail-row">
+          <span class="label">From:</span>
+          <span class="value">{{message.name}} ({{message.email}})</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Subject:</span>
+          <span class="value">{{message.subject}}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Date:</span>
+          <span class="value">{{message.created_at | date:'medium'}}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Status:</span>
+          <span class="value">
+            <span [class]="'status-badge ' + message.status">
+              {{message.status}}
+            </span>
+          </span>
+        </div>
+        <div class="message-content">
+          <span class="label">Message:</span>
+          <p class="value message-text">{{message.message}}</p>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="loading-container" *ngIf="isLoading">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<div class="error-message" *ngIf="error">
+  <p>{{error}}</p>
+  <button mat-raised-button color="primary" (click)="loadMessage()">Try Again</button>
+</div>

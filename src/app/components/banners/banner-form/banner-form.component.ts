@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { BannersService } from '../../../services/banners/banners.service';
 import { Banner } from '../../../models/banner';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb.component';
@@ -37,7 +37,8 @@ interface BannerFormData {
     MatSlideToggleModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    RouterModule
   ],
   templateUrl: './banner-form.component.html',
   styleUrls: ['./banner-form.component.scss']

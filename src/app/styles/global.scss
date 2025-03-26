@@ -1,0 +1,19 @@
+.mobile-nav-sheet {
+  .mat-bottom-sheet-container {
+    padding: 0;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    max-height: 80vh;
+  }
+}
+
+// Hide sidenav on mobile
+@media (max-width: 767px) {
+  .mat-sidenav {
+    display: none !important;
+  }
+
+  .mat-sidenav-content {
+    margin-left: 0 !important;
+  }
+} 

@@ -1,5 +1,10 @@
-.container {
+@use '../../../../scss/global' as *;
+
+  .container {
   padding: 20px;
+  @include respond-below(md) {
+    max-width: 100% !important;
+  }
 }
 
 .form-section-title {

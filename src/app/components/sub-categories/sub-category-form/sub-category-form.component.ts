@@ -42,7 +42,7 @@ export class SubCategoryFormComponent implements OnInit {
   // Breadcrumb items
   breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/dashboard' },
-    { label: 'Sub-Categories', url: '/sub-categories' }
+    { label: 'Marketing-Categories', url: '/marketing-categories' }
   ];
 
   constructor(
@@ -64,7 +64,7 @@ export class SubCategoryFormComponent implements OnInit {
       this.loadSubCategoryDetails(this.subCategoryId);
       this.breadcrumbItems.push({ label: 'Edit Sub-Category' });
     } else {
-      this.breadcrumbItems.push({ label: 'Add Sub-Category' });
+      this.breadcrumbItems.push({ label: 'Add Marketing-Category' });
     }
   }
 

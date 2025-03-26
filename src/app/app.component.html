@@ -1,8 +1,8 @@
 <div class="app-container">
   <app-header *ngIf="isAuthenticated"></app-header>
   <div class="main-content" [class.with-sidebar]="isAuthenticated">
-    <app-side-nav *ngIf="isAuthenticated && isSideNavOpen"></app-side-nav>
-    <main class="content" [class.with-sidenav]="isAuthenticated && isSideNavOpen">
+    <app-side-nav *ngIf="isAuthenticated && isSideNavOpen && !isMobile"></app-side-nav>
+    <main class="content" [class.with-sidenav]="isAuthenticated && isSideNavOpen && !isMobile">
       <router-outlet></router-outlet>
     </main>
   </div>

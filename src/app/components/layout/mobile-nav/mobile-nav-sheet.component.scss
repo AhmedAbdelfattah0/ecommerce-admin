@@ -1,0 +1,17 @@
+:host {
+  display: block;
+  padding: 16px 0;
+}
+
+.mat-nav-list {
+  padding: 0;
+}
+
+a {
+  height: 48px !important;
+}
+
+mat-icon {
+  margin-right: 16px;
+  color: var(--primary-color);
+}
