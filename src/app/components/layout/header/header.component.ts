@@ -31,12 +31,10 @@ import { MobileNavSheetComponent } from '../mobile-nav/mobile-nav-sheet.componen
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  private readonly SOUND_PREFERENCE_KEY = 'notification_sound_enabled';
   imageLoaded = false;
   imageError = false;
   unreadCount = 0;
   notifications: Notification[] = [];
-  soundEnabled = false;
   isMobile = false;
 
   constructor(
@@ -46,7 +44,6 @@ export class HeaderComponent implements OnInit {
     private notificationService: NotificationService,
     private bottomSheet: MatBottomSheet
   ) {
-    this.loadSoundPreference();
     this.checkScreenSize();
   }
 
@@ -64,34 +61,6 @@ export class HeaderComponent implements OnInit {
       this.notifications = notifications;
       this.unreadCount = notifications.filter(n => n.is_read === 0).length;
     });
-  }
-
-  private loadSoundPreference(): void {
-    const savedPreference = localStorage.getItem(this.SOUND_PREFERENCE_KEY);
-    if (savedPreference !== null) {
-      this.soundEnabled = savedPreference === 'true';
-      // Apply the saved preference
-      if (this.soundEnabled) {
-        this.notificationService.enableSound();
-      } else {
-        this.notificationService.disableSound();
-      }
-    }
-  }
-
-  private saveSoundPreference(enabled: boolean): void {
-    localStorage.setItem(this.SOUND_PREFERENCE_KEY, enabled.toString());
-  }
-
-  toggleSound(): void {
-    this.soundEnabled = !this.soundEnabled;
-    if (this.soundEnabled) {
-      this.notificationService.enableSound();
-    } else {
-      this.notificationService.disableSound();
-    }
-    // Save the new preference
-    this.saveSoundPreference(this.soundEnabled);
   }
 
   handleNotificationClick(notification: Notification): void {

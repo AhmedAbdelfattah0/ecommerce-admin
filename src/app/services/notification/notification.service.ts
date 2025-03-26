@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver, ApplicationRef, Injector, EmbeddedViewRef, ComponentRef, createComponent } from '@angular/core';
+import { Injectable, ApplicationRef, Injector, EmbeddedViewRef, ComponentRef, createComponent } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, interval } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -27,9 +27,6 @@ export class NotificationService {
   private readonly CHECK_INTERVAL = 30000; // 30 seconds
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
   private currentToasts: Map<number, ComponentRef<NotificationToastComponent>> = new Map();
-  private soundEnabled = false;
-  private soundInitialized = false;
-  private readonly SOUND_PREFERENCE_KEY = 'notification_sound_enabled';
 
   // Match these values with NotificationToastComponent
   private readonly baseTop = 20;
@@ -37,115 +34,12 @@ export class NotificationService {
   private readonly spacing = 16;
 
   notifications$ = this.notificationsSubject.asObservable();
-  private notificationSound: HTMLAudioElement | null = null;
 
   constructor(
     private http: HttpClient,
     private appRef: ApplicationRef,
     private injector: Injector
-  ) {
-    // Load sound preference from localStorage
-    this.loadSoundPreference();
-
-    // Initialize sound only when needed
-    if (this.soundEnabled) {
-      this.initializeSound();
-    }
-  }
-
-  private loadSoundPreference() {
-    const savedPreference = localStorage.getItem(this.SOUND_PREFERENCE_KEY);
-    this.soundEnabled = savedPreference === 'true';
-  }
-
-  private saveSoundPreference() {
-    localStorage.setItem(this.SOUND_PREFERENCE_KEY, String(this.soundEnabled));
-  }
-
-  private initializeSound() {
-    try {
-      // Create audio element if it doesn't exist
-      if (!this.notificationSound) {
-        this.notificationSound = new Audio('/assets/sounds/notification.mp3');
-
-        // Add event listeners for better debugging
-        this.notificationSound.addEventListener('error', (e) => {
-          console.error('Audio error:', e);
-        });
-
-        this.notificationSound.addEventListener('canplaythrough', () => {
-          this.soundInitialized = true;
-          console.log('Notification sound loaded and ready');
-        });
-
-        // Preload the sound file
-        this.notificationSound.load();
-      }
-    } catch (error) {
-      console.error('Error initializing sound:', error);
-    }
-  }
-
-  getSoundEnabled(): boolean {
-    return this.soundEnabled;
-  }
-
-  enableSound() {
-    this.soundEnabled = true;
-    this.saveSoundPreference();
-
-    // Initialize sound if needed
-    if (!this.notificationSound) {
-      this.initializeSound();
-    }
-
-    // Try to play a silent sound to unlock audio
-    this.unlockAudio();
-  }
-
-  disableSound() {
-    this.soundEnabled = false;
-    this.saveSoundPreference();
-  }
-
-  toggleSound(): boolean {
-    if (this.soundEnabled) {
-      this.disableSound();
-    } else {
-      this.enableSound();
-    }
-    return this.soundEnabled;
-  }
-
-  private unlockAudio() {
-    // This function tries to unlock audio by playing a silent sound
-    // after user interaction (which is typically when toggleSound is called)
-    if (!this.notificationSound) {
-      this.initializeSound();
-    }
-
-    if (this.notificationSound) {
-      // Store original volume, set to silent
-      const originalVolume = this.notificationSound.volume;
-      this.notificationSound.volume = 0.01;
-
-      // Try to play, then restore volume
-      this.notificationSound.play()
-        .then(() => {
-          // Successfully played, restore volume and pause
-          this.notificationSound!.volume = originalVolume;
-          this.notificationSound!.pause();
-          this.notificationSound!.currentTime = 0;
-          this.soundInitialized = true;
-          console.log('Audio unlocked successfully');
-        })
-        .catch((error) => {
-          console.warn('Could not unlock audio:', error);
-          // Restore volume even if failed
-          this.notificationSound!.volume = originalVolume;
-        });
-    }
-  }
+  ) { }
 
   startNotificationsCheck(): void {
     // Initial check
@@ -170,10 +64,6 @@ export class NotificationService {
                 current => current.id === notification.id
               )
             );
-
-            if (newNotifications.length > 0 && this.soundEnabled && newNotifications.some(notification => notification.is_read === 0)) {
-              this.playNotificationSound();
-            }
 
             // Update notifications in subject
             this.notificationsSubject.next(response.data.notifications);
@@ -214,31 +104,6 @@ export class NotificationService {
         }
       })
     );
-  }
-
-  private playNotificationSound() {
-    if (!this.soundEnabled) return;
-
-    // If sound not initialized, try to initialize it
-    if (!this.soundInitialized) {
-      this.initializeSound();
-    }
-
-    if (this.notificationSound) {
-      // Reset to beginning if currently playing
-      this.notificationSound.currentTime = 0;
-
-      this.notificationSound.play()
-        .then(() => {
-          console.log('Notification sound played successfully');
-        })
-        .catch(error => {
-          console.warn('Could not play notification sound:', error);
-          // Don't automatically disable sound - user preference should persist
-          // but mark sound as not initialized so we try again on next user interaction
-          this.soundInitialized = false;
-        });
-    }
   }
 
   private showNotificationToast(notification: Notification): void {

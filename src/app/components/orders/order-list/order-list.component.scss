@@ -27,7 +27,7 @@
 }
 
 .search-filter {
-  flex: 2;
+  flex: 1;
   min-width: 280px;
   @include respond-below(md) {
     flex: 1;
@@ -39,7 +39,12 @@
   flex: 1;
   min-width: 200px;
 }
-
+.clear-filters-btn{
+  width: 150px;
+  @include respond-below(md) {
+    width: 100%;
+  }
+}
 .loading-container {
   display: flex;
   justify-content: center;

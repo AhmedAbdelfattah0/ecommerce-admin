@@ -80,14 +80,9 @@ export class NotificationToastComponent implements OnChanges {
   }
 
   getActionButtonText(): string {
-    switch (this.notification.type) {
-      case 'order':
-        return 'View Order';
-      case 'message':
-        return 'Read Message';
-      default:
-        return 'View';
-    }
+
+    return 'Mark as Read';
+
   }
 
   onClose() {
