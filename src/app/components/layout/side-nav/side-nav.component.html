@@ -20,6 +20,14 @@
       <mat-icon matListItemIcon>shopping_cart</mat-icon>
       <span matListItemTitle>Orders</span>
     </a>
+    <a mat-list-item [routerLink]="'/custom-orders'" routerLinkActive="active">
+      <mat-icon matListItemIcon>design_services</mat-icon>
+      <span matListItemTitle>Custom Orders</span>
+    </a>
+    <a mat-list-item [routerLink]="'/appointments'" routerLinkActive="active">
+      <mat-icon matListItemIcon>calendar_today</mat-icon>
+      <span matListItemTitle>Appointments</span>
+    </a>
     <a mat-list-item [routerLink]="'/messages'" routerLinkActive="active">
       <mat-icon matListItemIcon>message</mat-icon>
       <span matListItemTitle>Messages</span>

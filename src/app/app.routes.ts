@@ -42,6 +42,19 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'custom-orders',
+    children: [
+      { path: '', loadComponent: () => import('./components/custom-orders/custom-order-list/custom-order-list.component').then(m => m.CustomOrderListComponent) },
+      { path: ':id', loadComponent: () => import('./components/custom-orders/custom-order-details/custom-order-details.component').then(m => m.CustomOrderDetailsComponent) }
+    ],
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'appointments',
+    loadComponent: () => import('./components/custom-orders/appointments/appointments.component').then(m => m.AppointmentsComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'messages',
     children: [
       { path: '', loadComponent: () => import('./components/messages/message-list/message-list.component').then(m => m.MessageListComponent) },

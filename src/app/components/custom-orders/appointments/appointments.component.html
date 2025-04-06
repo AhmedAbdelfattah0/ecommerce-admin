@@ -1,0 +1,146 @@
+<app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
+
+<div class="page-content">
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Measurement Appointments</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="filters-container">
+        <mat-form-field>
+          <mat-label>Search</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search by customer, item">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Filter by Status</mat-label>
+          <mat-select [(ngModel)]="statusFilter" (selectionChange)="applyStatusFilter()">
+            <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+              {{option.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <div class="mat-elevation-z8 table-container" *ngIf="!loading && !error">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <!-- Date Column -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+            <td mat-cell *matCellDef="let appointment"> {{appointment.appointment.date | date:'mediumDate'}} </td>
+          </ng-container>
+
+          <!-- Time Slot Column -->
+          <ng-container matColumnDef="timeSlot">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+            <td mat-cell *matCellDef="let appointment"> {{appointment.appointment.timeSlot}} </td>
+          </ng-container>
+
+          <!-- Item Column -->
+          <ng-container matColumnDef="item">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Item </th>
+            <td mat-cell *matCellDef="let appointment">
+              {{appointment.item.itemName}}
+              <div class="secondary-text">{{appointment.item.itemType | titlecase}}</div>
+            </td>
+          </ng-container>
+
+          <!-- Customer Column -->
+          <ng-container matColumnDef="customer">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer </th>
+            <td mat-cell *matCellDef="let appointment">
+              <div>{{appointment.customerInfo.name}}</div>
+              <div class="secondary-text">{{appointment.customerInfo.phone}}</div>
+              <div class="secondary-text address-text">{{appointment.appointment.address}}</div>
+            </td>
+          </ng-container>
+
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <td mat-cell *matCellDef="let appointment">
+              <mat-chip [ngClass]="getStatusClass(appointment.appointment.status)">
+                {{appointment.appointment.status | titlecase}}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let appointment">
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="viewOrder(appointment.orderId)">
+                  <mat-icon>visibility</mat-icon>
+                  <span>View Order</span>
+                </button>
+
+                <mat-divider></mat-divider>
+
+                <button mat-menu-item (click)="updateStatus(appointment, 'scheduled')"
+                        [disabled]="appointment.appointment.status === 'scheduled'">
+                  <mat-icon>schedule</mat-icon>
+                  <span>Mark as Scheduled</span>
+                </button>
+
+                <button mat-menu-item (click)="updateStatus(appointment, 'confirmed')"
+                        [disabled]="appointment.appointment.status === 'confirmed'">
+                  <mat-icon>check_circle</mat-icon>
+                  <span>Mark as Confirmed</span>
+                </button>
+
+                <button mat-menu-item (click)="updateStatus(appointment, 'in-progress')"
+                        [disabled]="appointment.appointment.status === 'in-progress'">
+                  <mat-icon>pending</mat-icon>
+                  <span>Mark as In Progress</span>
+                </button>
+
+                <button mat-menu-item (click)="updateStatus(appointment, 'completed')"
+                        [disabled]="appointment.appointment.status === 'completed'">
+                  <mat-icon>done_all</mat-icon>
+                  <span>Mark as Completed</span>
+                </button>
+
+                <button mat-menu-item (click)="updateStatus(appointment, 'cancelled')"
+                        [disabled]="appointment.appointment.status === 'cancelled'">
+                  <mat-icon>cancel</mat-icon>
+                  <span>Mark as Cancelled</span>
+                </button>
+
+                <button mat-menu-item (click)="updateStatus(appointment, 'rescheduled')"
+                        [disabled]="appointment.appointment.status === 'rescheduled'">
+                  <mat-icon>update</mat-icon>
+                  <span>Mark as Rescheduled</span>
+                </button>
+              </mat-menu>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <!-- Row shown when there is no matching data. -->
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="6">No appointments found</td>
+          </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons
+                      aria-label="Select page of appointments"></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,223 @@
+<app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
+
+<div class="page-content">
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="order && !loading && !error">
+    <div class="order-header">
+      <div>
+        <h1>Order #{{ order.id }}</h1>
+        <p class="order-date">Created: {{ order.created_at | date:'medium' }}</p>
+      </div>
+      <div class="order-status">
+        <mat-chip [ngClass]="getStatusClass(order.status || '')" class="status-chip">
+          {{ order.status | titlecase }}
+        </mat-chip>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button mat-raised-button color="primary" [disabled]="submitting" (click)="savePricing()">
+        <mat-icon>save</mat-icon>
+        Save Pricing
+      </button>
+
+      <button mat-raised-button color="accent"
+
+              (click)="generateContract()">
+        <mat-icon>description</mat-icon>
+        Generate Contract
+      </button>
+    </div>
+
+    <mat-card class="mat-elevation-z2 customer-info-card">
+      <mat-card-header>
+        <mat-card-title>Customer Information</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="customer-info">
+          <div>
+            <strong>Name:</strong> {{ order.customerInfo.name }}
+          </div>
+          <div>
+            <strong>Email:</strong> {{ order.customerInfo.email }}
+          </div>
+          <div>
+            <strong>Phone:</strong> {{ order.customerInfo.phone }}
+          </div>
+          <div>
+            <strong>Address:</strong> {{ order.customerInfo.address }}
+          </div>
+        </div>
+
+        <div class="order-preferences">
+          <div>
+            <strong>Delivery Method:</strong> {{ order.deliveryMethod | titlecase }}
+          </div>
+          <div>
+            <strong>Assembly Option:</strong> {{ order.assemblyOption | titlecase }}
+          </div>
+          <div *ngIf="order.notes">
+            <strong>Notes:</strong> {{ order.notes }}
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <form [formGroup]="pricingForm">
+      <div formArrayName="items">
+        <div *ngFor="let itemGroup of itemsFormArray.controls; let i = index" class="item-card-container">
+          <mat-card class="mat-elevation-z2 item-card" [formGroupName]="i">
+            <mat-card-header>
+              <mat-card-title>{{ itemGroup.get('itemName')?.value }}</mat-card-title>
+              <mat-card-subtitle>Quantity: {{ itemGroup.get('quantity')?.value }}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <div class="item-details">
+                <div class="pricing-field">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Base Price</mat-label>
+                    <input matInput type="number" formControlName="price" min="0">
+                    <mat-error *ngIf="itemGroup.get('price')?.hasError('required')">
+                      Price is required
+                    </mat-error>
+                    <mat-error *ngIf="itemGroup.get('price')?.hasError('min')">
+                      Price must be greater than or equal to 0
+                    </mat-error>
+                    <span matTextPrefix>$</span>
+                  </mat-form-field>
+                </div>
+
+                <div class="item-components" *ngIf="order.items[i].dimensions">
+                  <h3>Dimensions</h3>
+                  <div class="dimensions-info">
+                    <div>Width: {{ order.items[i].dimensions?.width }} {{ order.items[i].dimensions?.unit }}</div>
+                    <div>Height: {{ order.items[i].dimensions?.height }} {{ order.items[i].dimensions?.unit }}</div>
+                    <div>Depth: {{ order.items[i].dimensions?.depth }} {{ order.items[i].dimensions?.unit }}</div>
+                    <div *ngIf="order.items[i].dimensions?.notes">Notes: {{ order.items[i].dimensions?.notes }}</div>
+                  </div>
+                </div>
+                <div formArrayName="materials" *ngIf="getMaterialsControls(itemGroup).length > 0">
+                  <h3>Materials</h3>
+                  <div class="materials-container">
+                    <div *ngFor="let materialGroup of getMaterialsControls(itemGroup); let j = index" [formGroupName]="j" class="material-item">
+                      <div class="material-info">
+                        <div class="material-name">{{ materialGroup.get('name')?.value }}</div>
+                        <div class="material-quantity">Quantity: {{ materialGroup.get('quantity')?.value }}</div>
+                        <div class="material-color" *ngIf="order.items[i].materials?.[j]?.colorHex">
+                          <span class="color-swatch" [style.background-color]="order.items[i].materials?.[j]?.colorHex"></span>
+                          {{ order.items[i].materials?.[j]?.colorHex }}
+                        </div>
+                      </div>
+
+                      <div class="pricing-field">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Price</mat-label>
+                          <input matInput type="number" formControlName="price" min="0">
+                          <mat-error *ngIf="materialGroup.get('price')?.hasError('required')">
+                            Price is required
+                          </mat-error>
+                          <mat-error *ngIf="materialGroup.get('price')?.hasError('min')">
+                            Price must be greater than or equal to 0
+                          </mat-error>
+                          <span matTextPrefix>$</span>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div formArrayName="addOns" *ngIf="getAddOnsControls(itemGroup).length > 0">
+                  <h3>Add-ons</h3>
+                  <div class="addons-container">
+                    <div *ngFor="let addOnGroup of getAddOnsControls(itemGroup); let k = index" [formGroupName]="k" class="addon-item">
+                      <div class="addon-info">
+                        <div class="addon-name">{{ addOnGroup.get('name')?.value }}</div>
+                        <div class="addon-quantity">Quantity: {{ addOnGroup.get('quantity')?.value }}</div>
+                      </div>
+
+                      <div class="pricing-field">
+                        <mat-form-field appearance="outline">
+                          <mat-label>Price</mat-label>
+                          <input matInput type="number" formControlName="price" min="0">
+                          <mat-error *ngIf="addOnGroup.get('price')?.hasError('required')">
+                            Price is required
+                          </mat-error>
+                          <mat-error *ngIf="addOnGroup.get('price')?.hasError('min')">
+                            Price must be greater than or equal to 0
+                          </mat-error>
+                          <span matTextPrefix>$</span>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="order.items[i]?.appointment" class="appointment-info">
+                  <h3>Measurement Appointment</h3>
+                  <div class="appointment-details">
+                    <div>Date: {{ order.items[i]?.appointment?.date | date:'mediumDate' }}</div>
+                    <div>Time: {{ order.items[i]?.appointment?.timeSlot }}</div>
+                    <div>Address: {{ order.items[i]?.appointment?.address }}</div>
+                    <div *ngIf="order.items[i]?.appointment?.notes">Notes: {{ order.items[i]?.appointment?.notes }}</div>
+                    <div>
+                      Status:
+                      <mat-chip class="status-chip-small">
+                        {{ order.items[i]?.appointment?.status | titlecase }}
+                      </mat-chip>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="order.items[i]?.engraving" class="engraving-info">
+                  <h3>Engraving</h3>
+                  <div class="engraving-text">{{ order.items[i]?.engraving }}</div>
+                </div>
+
+                <div class="item-total">
+                  <strong>Item Total:</strong> {{ getItemTotal(i) | currency }}
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+
+      <mat-card class="mat-elevation-z2 pricing-summary-card">
+        <mat-card-header>
+          <mat-card-title>Price Summary</mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="pricing-summary">
+            <div class="price-row">
+              <span>Subtotal:</span>
+              <span>{{ subtotal | currency }}</span>
+            </div>
+            <div class="price-row">
+              <span>Tax (10%):</span>
+              <span>{{ tax | currency }}</span>
+            </div>
+            <div class="price-row">
+              <span>Shipping:</span>
+              <span>{{ shipping | currency }}</span>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="price-row total">
+              <span>Total:</span>
+              <span>{{ total | currency }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </div>
+</div>
