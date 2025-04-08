@@ -117,12 +117,7 @@ export class NotificationService {
   private showNotificationToaster(notification: Notification): void {
     const title = this.getNotificationTitle(notification);
 
-    this.toastr.info(notification.message, title, {
-      timeOut: 5000,
-      positionClass: 'toast-top-right',
-      closeButton: true,
-      progressBar: true
-    });
+    this.toastr.info(notification.message, title );
   }
 
   private getNotificationTitle(notification: Notification): string {

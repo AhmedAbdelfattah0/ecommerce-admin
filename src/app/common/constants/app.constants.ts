@@ -2,6 +2,7 @@ export const toasterCases = {
   DEFAULT: {
     toasterType: '',
     isVisible: false,
+    Message:'',
     viewLink: {
       link: '',
       isVisible: false,
