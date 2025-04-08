@@ -45,6 +45,46 @@ table {
   font-style: italic;
 }
 
+.status-chip {
+  padding: 4px 8px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+}
+
+.status-draft {
+  background-color: #eceff1;
+  color: #455a64;
+}
+
+.status-priced {
+  background-color: #bbdefb;
+  color: #1565c0;
+}
+
+.status-approved {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.status-in-progress {
+  background-color: #fff9c4;
+  color: #f57f17;
+}
+
+.status-completed {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.status-cancelled {
+  background-color: #ffcdd2;
+  color: #c62828;
+}
+
 mat-chip {
   font-size: 12px;
   height: 24px !important;

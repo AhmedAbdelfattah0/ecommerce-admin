@@ -67,7 +67,20 @@ export class CustomOrderService {
     );
   }
 
-  // Update measurement appointment status
+  // Get appointment details by ID
+  getAppointmentDetails(id: string): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/get_appointment_details.php?id=${id}`).pipe(
+      map(response => {
+        if (response && response.status && response.data) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Appointment not found');
+      }),
+      catchError(this.handleError<any>('getAppointmentDetails'))
+    );
+  }
+
+  // Update appointment status
   updateAppointmentStatus(appointmentId: string, status: string): Observable<any> {
     return this.http.post<ApiResponse<any>>(`${this.apiUrl}/update_appointment_status.php`, {
       appointmentId: appointmentId,
@@ -83,12 +96,46 @@ export class CustomOrderService {
     );
   }
 
+  // Reschedule appointment
+  rescheduleAppointment(appointmentId: string, date: string, timeSlot: string, notes?: string): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/reschedule_appointment.php`, {
+      appointmentId: appointmentId,
+      date: date,
+      timeSlot: timeSlot,
+      notes: notes
+    }).pipe(
+      map(response => {
+        if (response && response.status) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to reschedule appointment');
+      }),
+      catchError(this.handleError<any>('rescheduleAppointment'))
+    );
+  }
+
   // Generate contract/agreement for custom order
   generateContract(orderId: string): Observable<any> {
     return this.http.get<ApiResponse<any>>(`${this.apiUrl}/generate_contract.php?id=${orderId}`, {
       responseType: 'blob' as 'json'
     }).pipe(
       catchError(this.handleError<any>('generateContract'))
+    );
+  }
+
+  // Update custom order status
+  updateOrderStatus(orderId: string, status: string): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/update_custom_order_status.php`, {
+      orderId: orderId,
+      status: status
+    }).pipe(
+      map(response => {
+        if (response && response.status) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Failed to update order status');
+      }),
+      catchError(this.handleError<any>('updateOrderStatus'))
     );
   }
 

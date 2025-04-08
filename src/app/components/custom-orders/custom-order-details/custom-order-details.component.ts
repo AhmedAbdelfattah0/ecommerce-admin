@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,13 +22,15 @@ import { CustomOrderService } from '../../../services/orders/custom-order.servic
 import { CustomOrder, CustomOrderItem, MaterialItem, AddOnItem } from '../../../models/custom-order';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb.component';
 import { ToasterService } from '../../../services/toatser.service';
+import { AddSpaceAfterCurrencyPipe } from '../../../common/pipes/add-space-after-currency';
 
 @Component({
   selector: 'app-custom-order-details',
   standalone: true,
   imports: [
     CommonModule,
-     ReactiveFormsModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -41,7 +44,8 @@ import { ToasterService } from '../../../services/toatser.service';
     MatProgressSpinnerModule,
     MatSnackBarModule,
     MatTooltipModule,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    AddSpaceAfterCurrencyPipe
   ],
   templateUrl: './custom-order-details.component.html',
   styleUrls: ['./custom-order-details.component.scss']
@@ -53,6 +57,15 @@ export class CustomOrderDetailsComponent implements OnInit {
   error: string = '';
   pricingForm: FormGroup;
   submitting: boolean = false;
+  selectedStatus: string = '';
+  statusOptions = [
+    { value: 'draft', label: 'Draft' },
+    { value: 'priced', label: 'Priced' },
+    { value: 'approved', label: 'Approved' },
+    { value: 'in-progress', label: 'In Production' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'cancelled', label: 'Cancelled' }
+  ];
 
   breadcrumbs: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/dashboard' },
@@ -134,12 +147,13 @@ export class CustomOrderDetailsComponent implements OnInit {
       .subscribe({
         next: (order) => {
           this.order = order;
+          this.selectedStatus = order.status;
           this.initPricingForm(order);
           this.breadcrumbs[2].label = `Order #${order.save_code}`;
         },
         error: (err) => {
           this.error = 'Failed to load order details: ' + err.message;
-          // this.toasterService.showError('Error', 'Failed to load order details');
+          this.toasterService.showError('Error', 'Failed to load order details');
         }
       });
   }
@@ -155,7 +169,7 @@ export class CustomOrderDetailsComponent implements OnInit {
       const itemGroup = this.fb.group({
         id: [item.id],
         itemName: [{ value: item.itemName, disabled: true }],
-        price: [item.price || 0, [Validators.required, Validators.min(0)]],
+        price: [item.price === null ? '' : item.price, [Validators.required, Validators.min(0)]],
         quantity: [{ value: item.quantity, disabled: true }],
         materials: this.fb.array([]),
         addOns: this.fb.array([])
@@ -168,7 +182,7 @@ export class CustomOrderDetailsComponent implements OnInit {
           const materialGroup = this.fb.group({
             id: [material.materialId],
             name: [{ value: material.materialName, disabled: true }],
-            price: [material.price || 0, [Validators.required, Validators.min(0)]],
+            price: [material.price === null ? '' : material.price, [Validators.required, Validators.min(0)]],
             quantity: [{ value: material.quantity, disabled: true }]
           });
           materialsArray.push(materialGroup);
@@ -182,7 +196,7 @@ export class CustomOrderDetailsComponent implements OnInit {
           const addOnGroup = this.fb.group({
             id: [addOn.addOnId],
             name: [{ value: addOn.addOnName, disabled: true }],
-            price: [addOn.price || 0, [Validators.required, Validators.min(0)]],
+            price: [addOn.price === null ? '' : addOn.price, [Validators.required, Validators.min(0)]],
             quantity: [{ value: addOn.quantity, disabled: true }]
           });
           addOnsArray.push(addOnGroup);
@@ -196,7 +210,6 @@ export class CustomOrderDetailsComponent implements OnInit {
   savePricing(): void {
     if (this.pricingForm.invalid) {
       this.markFormGroupTouched(this.pricingForm);
-      // this.toasterService.showError('Validation Error', 'Please fix the errors in the form');
       return;
     }
 
@@ -207,16 +220,18 @@ export class CustomOrderDetailsComponent implements OnInit {
       pricing: {
         itemPrices: this.itemsFormArray.controls.map((itemControl) => {
           const item = itemControl.value;
+          const price = item.price === '' ? undefined : parseFloat(item.price);
+
           return {
             itemId: item.id,
-            price: parseFloat(item.price),
+            price: price,
             materialPrices: item.materials.map((material: any) => ({
               materialId: material.id,
-              price: parseFloat(material.price)
+              price: material.price === '' ? undefined : parseFloat(material.price)
             })),
             addOnPrices: item.addOns.map((addOn: any) => ({
               addOnId: addOn.id,
-              price: parseFloat(addOn.price)
+              price: addOn.price === '' ? undefined : parseFloat(addOn.price)
             }))
           };
         }),
@@ -230,12 +245,48 @@ export class CustomOrderDetailsComponent implements OnInit {
     this.customOrderService.updateCustomOrderPricing(this.orderId, pricingData.pricing)
       .pipe(finalize(() => this.submitting = false))
       .subscribe({
-        next: () => {
-          // this.toasterService.showSuccess('Success', 'Order pricing has been updated');
-          this.loadOrderDetails(); // Reload the order to show updated pricing
+        next: (response) => {
+          // Update the order object with new values instead of reloading
+          if (this.order) {
+            this.order.total_amount = response.total_amount;
+
+            // Update status if it was 'draft'
+            if (this.order.status === 'draft') {
+              this.order.status = 'priced';
+              this.selectedStatus = 'priced';
+            }
+
+            // Update the items in the order object
+            this.itemsFormArray.controls.forEach((itemControl, index) => {
+              if (this.order?.items[index]) {
+                const itemPrice = itemControl.get('price')?.value;
+                this.order.items[index].price = itemPrice === '' ? undefined : parseFloat(itemPrice || '0');
+
+                // Update materials
+                const materialsArray = itemControl.get('materials') as FormArray;
+                materialsArray.controls.forEach((materialControl, mIndex) => {
+                  if (this.order?.items[index].materials?.[mIndex]) {
+                    const materialPrice = materialControl.get('price')?.value;
+                    this.order.items[index].materials[mIndex].price = materialPrice === '' ? undefined : parseFloat(materialPrice || '0');
+                  }
+                });
+
+                // Update add-ons
+                const addOnsArray = itemControl.get('addOns') as FormArray;
+                addOnsArray.controls.forEach((addOnControl, aIndex) => {
+                  if (this.order?.items[index].addOns?.[aIndex]) {
+                    const addOnPrice = addOnControl.get('price')?.value;
+                    this.order.items[index].addOns[aIndex].price = addOnPrice === '' ? undefined : parseFloat(addOnPrice || '0');
+                  }
+                });
+              }
+            });
+          }
+
+          this.toasterService.showSuccess('Success', 'Order pricing has been updated');
         },
         error: (err) => {
-          // this.toasterService.showError('Error', 'Failed to update order pricing: ' + err.message);
+          this.toasterService.showError('Error', 'Failed to update order pricing: ' + err.message);
         }
       });
   }
@@ -256,8 +307,8 @@ export class CustomOrderDetailsComponent implements OnInit {
     }
   }
 
-  getStatusClass(status: string): string {
-    switch (status) {
+  getStatusChipClass(status: string): string {
+    switch (status.toLowerCase()) {
       case 'draft': return 'status-draft';
       case 'priced': return 'status-priced';
       case 'approved': return 'status-approved';
@@ -326,5 +377,24 @@ export class CustomOrderDetailsComponent implements OnInit {
   getAddOnsControls(itemGroup: AbstractControl): any[] {
     const addOnsArray = itemGroup.get('addOns') as FormArray;
     return addOnsArray ? addOnsArray.controls : [];
+  }
+
+  updateOrderStatus(): void {
+    if (!this.order?.id || !this.selectedStatus) return;
+
+    this.submitting = true;
+    this.customOrderService.updateOrderStatus(this.order.id.toString(), this.selectedStatus)
+      .pipe(finalize(() => this.submitting = false))
+      .subscribe({
+        next: () => {
+          if (this.order) {
+            this.order.status = this.selectedStatus;
+          }
+          this.toasterService.showSuccess('Success', 'Order status updated successfully');
+        },
+        error: (error: Error) => {
+          this.toasterService.showError('Error', error.message || 'Failed to update order status');
+        }
+      });
   }
 }

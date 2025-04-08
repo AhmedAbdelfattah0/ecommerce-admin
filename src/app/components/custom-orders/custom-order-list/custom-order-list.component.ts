@@ -108,7 +108,7 @@ export class CustomOrderListComponent implements OnInit {
         },
         error: (err) => {
           this.error = 'Failed to load custom orders: ' + err.message;
-          // this.toasterService.showError('Error', 'Failed to load custom orders');
+          this.toasterService.showError('Error', 'Failed to load custom orders');
         }
       });
   }
@@ -143,7 +143,7 @@ export class CustomOrderListComponent implements OnInit {
     this.dataSource.filter = this.dataSource.filter || ' ';
   }
 
-  getStatusClass(status: string): string {
+  getStatusChipClass(status: string): string {
     switch (status) {
       case 'draft': return 'status-draft';
       case 'priced': return 'status-priced';

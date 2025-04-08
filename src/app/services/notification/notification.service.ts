@@ -1,8 +1,10 @@
-import { Injectable, ApplicationRef, Injector, EmbeddedViewRef, ComponentRef, createComponent } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, interval } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { NotificationToastComponent } from '../../components/dialogs/notification-toast/notification-toast.component';
+import { BehaviorSubject, Observable, interval, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../../models/api-response';
+import { ToastrService } from 'ngx-toastr';
 
 interface NotificationResponse {
   status: boolean;
@@ -14,7 +16,7 @@ interface NotificationResponse {
 
 export interface Notification {
   id: number;
-  type: 'order' | 'message';
+  type: 'order' | 'message' | 'appointment';
   message: string;
   created_at: string;
   is_read: number;
@@ -26,19 +28,14 @@ export interface Notification {
 export class NotificationService {
   private readonly CHECK_INTERVAL = 30000; // 30 seconds
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
-  private currentToasts: Map<number, ComponentRef<NotificationToastComponent>> = new Map();
-
-  // Match these values with NotificationToastComponent
-  private readonly baseTop = 20;
-  private readonly height = 160;
-  private readonly spacing = 16;
+  private unreadCountSubject = new BehaviorSubject<number>(0);
 
   notifications$ = this.notificationsSubject.asObservable();
+  unreadCount$ = this.unreadCountSubject.asObservable();
 
   constructor(
     private http: HttpClient,
-    private appRef: ApplicationRef,
-    private injector: Injector
+    private toastr: ToastrService
   ) { }
 
   startNotificationsCheck(): void {
@@ -54,7 +51,7 @@ export class NotificationService {
   }
 
   checkNotifications(): Observable<NotificationResponse> {
-    return this.http.get<NotificationResponse>('/notifications/get_notifications.php').pipe(
+    return this.http.get<NotificationResponse>(`/notifications/get_notifications.php`).pipe(
       tap({
         next: (response) => {
           if (response.status && response.data.notifications) {
@@ -68,9 +65,12 @@ export class NotificationService {
             // Update notifications in subject
             this.notificationsSubject.next(response.data.notifications);
 
-            // Show popup for each new notification
+            // Update unread count
+            this.countUnreadNotifications();
+
+            // Show toaster for each new notification
             newNotifications.forEach(notification => {
-              this.showNotificationToast(notification);
+              this.showNotificationToaster(notification);
             });
           }
         },
@@ -81,94 +81,60 @@ export class NotificationService {
     );
   }
 
-  markNotificationAsRead(notificationId: number): Observable<any> {
-    return this.http.post('/notifications/mark_notifications.php', { id: notificationId }).pipe(
-      tap({
-        next: () => {
-          // Update local state
-          const currentNotifications = this.notificationsSubject.getValue();
-          const updatedNotifications = currentNotifications.map(notification =>
-            notification.id === notificationId
-              ? { ...notification, is_read: 1 }
-              : notification
+  /**
+   * Mark a notification as read
+   * @param id Notification ID
+   * @returns Observable of API response
+   */
+  markNotificationAsRead(id: number): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`/notifications/mark_as_read.php`, { id })
+      .pipe(
+        tap(() => {
+          // Update local notifications list
+          this.notificationsSubject.next(
+            this.notificationsSubject.value.map(n =>
+              n.id === id ? { ...n, is_read: 1 } : n
+            )
           );
-          this.notificationsSubject.next(updatedNotifications);
-
-          // Close toast if it exists
-          if (this.currentToasts.has(notificationId)) {
-            this.removeToast(notificationId);
-          }
-        },
-        error: (error) => {
+          // Update unread count
+          this.countUnreadNotifications();
+        }),
+        catchError(error => {
           console.error('Error marking notification as read:', error);
-        }
-      })
-    );
+          return of({ status: false, message: 'Failed to mark notification as read', data: null } as ApiResponse<any>);
+        })
+      );
   }
 
-  private showNotificationToast(notification: Notification): void {
-    // Remove existing toast for this notification if it exists
-    if (this.currentToasts.has(notification.id)) {
-      this.removeToast(notification.id);
+  /**
+   * Count unread notifications and update the unread count subject
+   */
+  private countUnreadNotifications(): void {
+    const unreadCount = this.notificationsSubject.value.filter(n => n.is_read === 0).length;
+    this.unreadCountSubject.next(unreadCount);
+  }
+
+  private showNotificationToaster(notification: Notification): void {
+    const title = this.getNotificationTitle(notification);
+
+    this.toastr.info(notification.message, title, {
+      timeOut: 5000,
+      positionClass: 'toast-top-right',
+      closeButton: true,
+      progressBar: true
+    });
+  }
+
+  private getNotificationTitle(notification: Notification): string {
+    switch (notification.type) {
+      case 'order':
+        return 'New Order!';
+      case 'message':
+        return 'New Message!';
+      case 'appointment':
+        return 'New Appointment!';
+      default:
+        return 'Notification';
     }
-
-    // Create component
-    const componentRef = createComponent(NotificationToastComponent, {
-      environmentInjector: this.appRef.injector,
-      elementInjector: this.injector
-    });
-
-    // Set inputs
-    componentRef.instance.notification = notification;
-    componentRef.instance.position = this.currentToasts.size;
-
-    // Handle events
-    componentRef.instance.close.subscribe(() => {
-      this.removeToast(notification.id);
-    });
-
-    componentRef.instance.action.subscribe(() => {
-      this.markNotificationAsRead(notification.id).subscribe();
-    });
-
-    // Attach to the DOM
-    this.appRef.attachView(componentRef.hostView);
-    document.body.appendChild((componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0]);
-
-    // Store reference
-    this.currentToasts.set(notification.id, componentRef);
-
-    // Auto close after 10 seconds
-    setTimeout(() => {
-      if (this.currentToasts.has(notification.id)) {
-        this.removeToast(notification.id);
-      }
-    }, 10000);
-  }
-
-  private removeToast(id: number) {
-    const componentRef = this.currentToasts.get(id);
-    if (componentRef) {
-      this.appRef.detachView(componentRef.hostView);
-      componentRef.destroy();
-      this.currentToasts.delete(id);
-      this.reposition();
-    }
-  }
-
-  private reposition(): void {
-    let index = 0;
-    this.currentToasts.forEach(componentRef => {
-      // Update position property
-      componentRef.instance.position = index;
-
-      // Update DOM position directly
-      const element = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
-      const offset = index * (this.height + this.spacing);
-      element.style.top = `${this.baseTop + offset}px`;
-      element.style.transition = 'top 0.3s ease-in-out';
-
-      index++;
-    });
   }
 }

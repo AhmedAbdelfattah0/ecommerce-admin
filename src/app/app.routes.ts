@@ -51,7 +51,10 @@ export const routes: Routes = [
   },
   {
     path: 'appointments',
-    loadComponent: () => import('./components/custom-orders/appointments/appointments.component').then(m => m.AppointmentsComponent),
+    children: [
+      { path: '', loadComponent: () => import('./components/custom-orders/appointments/appointments.component').then(m => m.AppointmentsComponent) },
+      { path: ':id', loadComponent: () => import('./components/custom-orders/appointment-details/appointment-details.component').then(m => m.AppointmentDetailsComponent) }
+    ],
     canActivate: [AuthGuard]
   },
   {

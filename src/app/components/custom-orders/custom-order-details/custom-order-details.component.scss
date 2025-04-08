@@ -18,21 +18,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
 
   h1 {
-    margin-bottom: 0;
+    margin: 0;
+    font-size: 24px;
   }
 
   .order-date {
     color: rgba(0, 0, 0, 0.54);
-    margin-top: 4px;
+    margin: 4px 0 0;
+  }
+}
+
+.order-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .status-select {
+    width: 160px;
   }
 }
 
 .status-chip {
-  font-size: 14px;
-  padding: 8px 12px;
+  padding: 4px 8px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
 }
 
 .status-chip-small {
@@ -48,33 +64,33 @@
 }
 
 .status-draft {
-  background-color: #e0e0e0 !important;
-  color: #616161 !important;
+  background-color: #eceff1;
+  color: #455a64;
 }
 
 .status-priced {
-  background-color: #bbdefb !important;
-  color: #1565c0 !important;
+  background-color: #bbdefb;
+  color: #1565c0;
 }
 
 .status-approved {
-  background-color: #c8e6c9 !important;
-  color: #2e7d32 !important;
+  background-color: #c8e6c9;
+  color: #2e7d32;
 }
 
 .status-in-progress {
-  background-color: #fff9c4 !important;
-  color: #f57f17 !important;
+  background-color: #fff9c4;
+  color: #f57f17;
 }
 
 .status-completed {
-  background-color: #c5e1a5 !important;
-  color: #33691e !important;
+  background-color: #c8e6c9;
+  color: #2e7d32;
 }
 
 .status-cancelled {
-  background-color: #ffcdd2 !important;
-  color: #c62828 !important;
+  background-color: #ffcdd2;
+  color: #c62828;
 }
 
 .customer-info-card {
@@ -108,6 +124,14 @@
   .pricing-field {
     max-width: 200px;
     margin-bottom: 16px;
+    mat-form-field{
+      width: 100%;
+      ::ng-deep{
+        .mat-mdc-form-field-text-prefix{
+          padding-right: 8px;
+        }
+      }
+    }
   }
 
   h3 {

@@ -69,6 +69,7 @@ export interface CustomOrder {
   tax?: number;
   shipping?: number;
   total?: number;
+  total_amount?: number; // Total amount after pricing is set
   adminNotes?: string; // Internal notes for admin
 }
 

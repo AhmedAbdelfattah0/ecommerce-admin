@@ -59,22 +59,44 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.notificationService.notifications$.subscribe(notifications => {
       this.notifications = notifications;
-      this.unreadCount = notifications.filter(n => n.is_read === 0).length;
+    });
+
+    this.notificationService.unreadCount$.subscribe(count => {
+      this.unreadCount = count;
     });
   }
 
   handleNotificationClick(notification: Notification): void {
     // Mark notification as read
-    this.notificationService.markNotificationAsRead(notification.id).subscribe();
+    this.notificationService.markNotificationAsRead(notification.id).subscribe(() => {
+      this.checkNotifications();
+    });
 
     // Navigate based on notification type
     switch (notification.type) {
       case 'order':
-        this.router.navigate(['/orders']);
+        // Extract order ID from notification message
+        const orderMatch = notification.message.match(/ORDER-(\d+)/);
+        if (orderMatch && orderMatch[1]) {
+          const orderId = orderMatch[1];
+          // Check if it's a custom order message
+          if (notification.message.includes('custom')) {
+            this.router.navigate(['/custom-orders/details', orderId]);
+          } else {
+            this.router.navigate(['/orders/details', orderId]);
+          }
+        } else {
+          this.router.navigate(['/orders']);
+        }
         break;
       case 'message':
         this.router.navigate(['/messages']);
         break;
+      case 'appointment':
+        this.router.navigate(['/appointments']);
+        break;
+      default:
+        this.router.navigate(['/dashboard']);
     }
   }
 
@@ -111,5 +133,9 @@ export class HeaderComponent implements OnInit {
   onImageLoad() {
     this.imageLoaded = true;
     this.imageError = false;
+  }
+
+  private checkNotifications(): void {
+    this.notificationService.checkNotifications().subscribe();
   }
 }

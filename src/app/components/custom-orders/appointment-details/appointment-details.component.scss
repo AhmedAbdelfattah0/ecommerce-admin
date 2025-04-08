@@ -1,0 +1,413 @@
+.page-content {
+  padding: 16px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.error-message {
+  color: #f44336;
+  padding: 16px;
+  text-align: center;
+  background: #ffebee;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+// Header
+.header-card {
+  margin-bottom: 24px;
+  background: linear-gradient(to right, #3f51b5, #536dfe);
+  color: white;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.appointment-info {
+  h1 {
+    margin: 0 0 8px;
+    font-size: 1.8rem;
+  }
+}
+
+.order-reference {
+  font-size: 1rem;
+
+  a {
+    color: #fff;
+    text-decoration: underline;
+    margin-left: 4px;
+  }
+}
+
+// Layout
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+// Common card styles
+mat-card {
+  height: 100%;
+  box-sizing: border-box;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.title-icon {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+// Status
+.status-chip {
+  padding: 4px 12px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 120px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-scheduled {
+  background-color: #e0e0e0;
+  color: #616161;
+}
+
+.status-confirmed {
+  background-color: #bbdefb;
+  color: #1565c0;
+}
+
+.status-in-progress {
+  background-color: #fff9c4;
+  color: #f57f17;
+}
+
+.status-completed {
+  background-color: #c5e1a5;
+  color: #33691e;
+}
+
+.status-cancelled {
+  background-color: #ffcdd2;
+  color: #c62828;
+}
+
+.status-rescheduled {
+  background-color: #e1bee7;
+  color: #6a1b9a;
+}
+
+// Details card
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.detail-label {
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-size: 1rem;
+}
+
+.time-slot-display {
+  white-space: pre-line;
+  line-height: 1.2;
+}
+
+.notes-text {
+  white-space: pre-line;
+  background-color: #f9f9f9;
+  padding: 8px;
+  border-radius: 4px;
+  border-left: 3px solid #3f51b5;
+}
+
+// Customer card
+.customer-details {
+  padding: 8px 0;
+}
+
+.customer-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.contact-info {
+  margin-top: 8px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+
+  mat-icon {
+    margin-right: 8px;
+    color: #3f51b5;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Item card
+.item-details {
+  padding:.8px 0;
+}
+
+.item-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.item-type {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 16px;
+}
+
+.item-description {
+  margin: 16px 0;
+  padding: 8px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.item-dimensions {
+  margin-top: 16px;
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+.dimensions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.dimension-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.dimension-label {
+  font-size: 0.85rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.dimension-value {
+  font-weight: 500;
+}
+
+// Reschedule form
+.form-fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  // Make the time slot dropdown wider and taller
+  mat-form-field.mat-form-field {
+    min-width: 100%;
+
+    &:nth-child(2) {
+      // This targets the time slot field specifically
+      width: 100%;
+
+      ::ng-deep .mat-form-field-infix {
+        min-height: 50px; // Give more height for the two lines of text
+        padding-top: 12px;
+        padding-bottom: 8px;
+      }
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.spinner-inline {
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+// Status actions
+.status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.status-button {
+  flex: 1;
+  min-width: 120px;
+  margin: 4px;
+  transition: all 0.2s;
+
+  &:not([disabled]):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Style for time slot text with line breaks
+// .time-slot-text {
+//   white-space: pre-line;
+//   display: block;
+//   line-height: 1.2;
+// }
+
+// // Hide the display-value in the dropdown options
+// .mat-option .time-slot-display-value {
+//   display: none;
+// }
+
+// // Hide the full text in the selected value
+// ::ng-deep .mat-select-value .time-slot-text {
+//   display: none;
+// }
+
+// // Style the display value for the selected option
+// .time-slot-display-value {
+//   font-weight: 500;
+// }
+
+// // Additional space in dropdown options
+// .mat-option {
+//   .time-slot-full-value {
+//     margin-bottom: 4px;
+//     font-weight: 500;
+//   }
+// }
+
+// // Style mat-select-value to show only first line
+// ::ng-deep .mat-select-value {
+//   .time-slot-text {
+//     white-space: nowrap;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+
+//     // Show only the first line
+//     &::after {
+//       content: attr(data-first-line);
+//     }
+//   }
+// }
+
+// Style mat-select panel to be wider and handle multiline options
+::ng-deep .mat-select-panel {
+  min-width: 200px !important;
+
+  .mat-option {
+    height: auto !important;
+    line-height: normal !important;
+    padding: 10px 16px !important;
+  }
+}
+
+// Fix for the selected time slot text in the dropdown
+::ng-deep .mat-select-value-text {
+  // Allow for text wrapping in the selected value
+  .time-slot-text {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: block;
+    line-height: 1.2;
+  }
+}
+
+// Make the time slot dropdown field taller to accommodate two lines
+::ng-deep .mat-form-field-infix {
+  // Add some height to the select field when it has the time-slot class
+  .mat-select.time-slot-select {
+    line-height: 1.2;
+    padding: 5px 0;
+  }
+}
+
+// Style mat-select-value to show only first line
+::ng-deep .mat-select-value {
+  .time-slot-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    // Show only the first line
+    &::after {
+      content: attr(data-first-line);
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .details-grid,
+  .form-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .status-actions {
+    flex-direction: column;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .status-container {
+      margin-top: 16px;
+    }
+  }
+}

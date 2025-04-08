@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -66,8 +66,7 @@ export class AppointmentsComponent implements OnInit {
     { value: '', label: 'All Statuses' },
     { value: 'scheduled', label: 'Scheduled' },
     { value: 'confirmed', label: 'Confirmed' },
-    { value: 'in-progress', label: 'In Progress' },
-    { value: 'completed', label: 'Completed' },
+     { value: 'completed', label: 'Completed' },
     { value: 'cancelled', label: 'Cancelled' },
     { value: 'rescheduled', label: 'Rescheduled' }
   ];
@@ -77,7 +76,8 @@ export class AppointmentsComponent implements OnInit {
 
   constructor(
     private customOrderService: CustomOrderService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -98,6 +98,12 @@ export class AppointmentsComponent implements OnInit {
       .subscribe({
         next: (appointments) => {
           this.dataSource.data = appointments;
+          this.dataSource.data.map(appointment => {
+            appointment.appointment.timeSlot = appointment.appointment.timeSlot
+            .replace(/morning/i, 'Morning\n 9 AM - 12 PM')
+            .replace(/afternoon/i, 'Afternoon\n 1 PM - 5 PM')
+            .replace(/evening/i, 'Evening\n 6 PM - 8 PM');
+          });
           this.applyFilters();
         },
         error: (err) => {
@@ -143,10 +149,10 @@ export class AppointmentsComponent implements OnInit {
         next: () => {
           // Update the status locally to avoid reloading all appointments
           appointment.appointment.status = status;
-          // this.toasterService.showSuccess('Success', 'Appointment status updated');
+          this.toasterService.showSuccess('Success', 'Appointment status updated');
         },
         error: (err) => {
-          // this.toasterService.showError('Error', 'Failed to update appointment status: ' + err.message);
+          this.toasterService.showError('Error', 'Failed to update appointment status: ' + err.message);
         }
       });
   }
@@ -155,8 +161,7 @@ export class AppointmentsComponent implements OnInit {
     switch (status) {
       case 'scheduled': return 'status-scheduled';
       case 'confirmed': return 'status-confirmed';
-      case 'in-progress': return 'status-in-progress';
-      case 'completed': return 'status-completed';
+       case 'completed': return 'status-completed';
       case 'cancelled': return 'status-cancelled';
       case 'rescheduled': return 'status-rescheduled';
       default: return '';
@@ -165,5 +170,9 @@ export class AppointmentsComponent implements OnInit {
 
   viewOrder(orderId: number) {
     window.open(`/custom-orders/${orderId}`, '_blank');
+  }
+
+  viewAppointment(appointmentId: number) {
+    this.router.navigate(['/appointments', appointmentId]);
   }
 }

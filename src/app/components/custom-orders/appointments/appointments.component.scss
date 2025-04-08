@@ -53,34 +53,44 @@ mat-chip {
   min-height: 24px !important;
 }
 
+.status-chip {
+  padding: 4px 8px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+}
+
 .status-scheduled {
-  background-color: #e0e0e0 !important;
-  color: #616161 !important;
+  background-color: #e0e0e0;
+  color: #616161;
 }
 
 .status-confirmed {
-  background-color: #bbdefb !important;
-  color: #1565c0 !important;
+  background-color: #bbdefb;
+  color: #1565c0;
 }
 
 .status-in-progress {
-  background-color: #fff9c4 !important;
-  color: #f57f17 !important;
+  background-color: #fff9c4;
+  color: #f57f17;
 }
 
 .status-completed {
-  background-color: #c5e1a5 !important;
-  color: #33691e !important;
+  background-color: #c5e1a5;
+  color: #33691e;
 }
 
 .status-cancelled {
-  background-color: #ffcdd2 !important;
-  color: #c62828 !important;
+  background-color: #ffcdd2;
+  color: #c62828;
 }
 
 .status-rescheduled {
-  background-color: #e1bee7 !important;
-  color: #6a1b9a !important;
+  background-color: #e1bee7;
+  color: #6a1b9a;
 }
 
 .mat-column-date {

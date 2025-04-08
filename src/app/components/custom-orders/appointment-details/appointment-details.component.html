@@ -1,0 +1,233 @@
+<app-breadcrumb [items]="breadcrumbs"></app-breadcrumb>
+
+<div class="page-content">
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && appointment" @fadeIn>
+    <!-- Header Card -->
+    <mat-card class="mat-elevation-z2 header-card" @slideIn>
+      <mat-card-content>
+        <div class="header-content">
+          <div class="appointment-info">
+            <h1>Appointment #{{ appointment.id }}</h1>
+            <div class="order-reference">
+              <span>For Order: </span>
+              <a [routerLink]="['/custom-orders', appointment.appointment.orderId]">
+                {{ appointment.orderCode || 'ORDER-' + appointment.appointment.orderId }}
+              </a>
+            </div>
+          </div>
+          <div class="status-container">
+            <span class="status-chip" [ngClass]="getStatusClass(appointment.appointment.status)">
+              {{ appointment.appointment.status | titlecase }}
+            </span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Main Content -->
+    <div class="content-grid">
+      <!-- Appointment Details -->
+      <mat-card class="mat-elevation-z2 details-card" @slideIn>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="title-icon">event</mat-icon>
+            Appointment Details
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Date</span>
+              <span class="detail-value">{{ appointment.appointment.date | date:'fullDate' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Time Slot</span>
+              <span class="detail-value time-slot-display">{{ appointment.appointment.timeSlot }}</span>
+            </div>
+            <div class="detail-item full-width">
+              <span class="detail-label">Address</span>
+              <span class="detail-value">{{ appointment.appointment.address }}</span>
+            </div>
+            <div class="detail-item full-width" *ngIf="appointment.appointment.notes">
+              <span class="detail-label">Notes</span>
+              <span class="detail-value notes-text">{{ appointment.appointment.notes }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Created</span>
+              <span class="detail-value">{{ appointment.appointment.createdAt | date:'medium' }}</span>
+            </div>
+            <div class="detail-item" *ngIf="appointment.appointment.updatedAt">
+              <span class="detail-label">Last Updated</span>
+              <span class="detail-value">{{ appointment.appointment.updatedAt | date:'medium' }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+          <button mat-button color="primary" (click)="toggleRescheduleForm()">
+            <mat-icon>update</mat-icon>
+            {{ showRescheduleForm ? 'Cancel' : 'Reschedule' }}
+          </button>
+          <button mat-button color="accent" (click)="viewOrder()">
+            <mat-icon>visibility</mat-icon> View Order
+          </button>
+        </mat-card-actions>
+      </mat-card>
+
+      <!-- Customer Information -->
+      <mat-card class="mat-elevation-z2 customer-card" @slideIn>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="title-icon">person</mat-icon>
+            Customer Information
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="customer-details">
+            <div class="customer-name">{{ appointment.customerInfo.name }}</div>
+
+            <div class="contact-info">
+              <div class="contact-item">
+                <mat-icon>phone</mat-icon>
+                <span>{{ appointment.customerInfo.phone }}</span>
+              </div>
+              <div class="contact-item">
+                <mat-icon>email</mat-icon>
+                <span>{{ appointment.customerInfo.email }}</span>
+              </div>
+              <div class="contact-item" *ngIf="appointment.customerInfo.address">
+                <mat-icon>home</mat-icon>
+                <span>{{ appointment.customerInfo.address }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Item Details -->
+      <mat-card class="mat-elevation-z2 item-card" @slideIn>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="title-icon">inventory_2</mat-icon>
+            Item Details
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="item-details">
+            <div class="item-name">{{ appointment.item.itemName }}</div>
+            <div class="item-type">{{ appointment.item.itemType | titlecase }}</div>
+
+            <div class="item-description" *ngIf="appointment.item.itemDescription">
+              {{ appointment.item.itemDescription }}
+            </div>
+
+            <div class="item-dimensions" *ngIf="appointment.item.dimensions">
+              <h4>Dimensions:</h4>
+              <div class="dimensions-grid">
+                <div class="dimension-item">
+                  <span class="dimension-label">Width</span>
+                  <span class="dimension-value">{{ appointment.item.dimensions.width }} {{ appointment.item.dimensions.unit }}</span>
+                </div>
+                <div class="dimension-item">
+                  <span class="dimension-label">Height</span>
+                  <span class="dimension-value">{{ appointment.item.dimensions.height }} {{ appointment.item.dimensions.unit }}</span>
+                </div>
+                <div class="dimension-item">
+                  <span class="dimension-label">Depth</span>
+                  <span class="dimension-value">{{ appointment.item.dimensions.depth }} {{ appointment.item.dimensions.unit }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Reschedule Form -->
+      <mat-card class="mat-elevation-z2 reschedule-card" *ngIf="showRescheduleForm" @slideIn>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="title-icon">calendar_today</mat-icon>
+            Reschedule Appointment
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <form [formGroup]="rescheduleForm" (ngSubmit)="rescheduleAppointment()">
+            <div class="form-fields">
+              <mat-form-field appearance="outline">
+                <mat-label>New Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="rescheduleForm.get('date')?.hasError('required')">
+                  Date is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>New Time Slot</mat-label>
+                <mat-select formControlName="timeSlot" class="time-slot-select" required>
+                  <mat-option *ngFor="let slot of timeSlots" [value]="slot.key">
+                    <span class="time-slot-label">{{ slot.label }}</span>
+                    <br>
+                    <span class="time-slot-text">{{ slot.value }}</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="rescheduleForm.get('timeSlot')?.hasError('required')">
+                  Time slot is required
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Notes</mat-label>
+                <textarea matInput formControlName="notes" placeholder="Add notes about rescheduling" rows="3"></textarea>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" mat-button (click)="toggleRescheduleForm()">Cancel</button>
+              <button type="submit" mat-raised-button color="primary" [disabled]="rescheduleForm.invalid || submitting">
+                <mat-icon>save</mat-icon> Save Changes
+                <mat-spinner *ngIf="submitting" diameter="20" class="spinner-inline"></mat-spinner>
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Status Actions -->
+      <mat-card class="mat-elevation-z2 status-card" @slideIn>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="title-icon">update</mat-icon>
+            Update Status
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="status-actions">
+            <button *ngFor="let status of statusOptions"
+                    mat-raised-button
+                    [color]="appointment.appointment.status === status.value ? 'primary' : ''"
+                    [disabled]="appointment.appointment.status === status.value || submitting"
+                    (click)="updateStatus(status.value)"
+                    class="status-button">
+              {{ status.label }}
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

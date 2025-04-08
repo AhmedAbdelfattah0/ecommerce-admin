@@ -12,13 +12,21 @@
   <div *ngIf="order && !loading && !error">
     <div class="order-header">
       <div>
-        <h1>Order #{{ order.id }}</h1>
+        <h1>Order #{{orderId }}</h1>
         <p class="order-date">Created: {{ order.created_at | date:'medium' }}</p>
       </div>
       <div class="order-status">
-        <mat-chip [ngClass]="getStatusClass(order.status || '')" class="status-chip">
+        <span class="status-chip" [ngClass]="getStatusChipClass(order.status || '')">
           {{ order.status | titlecase }}
-        </mat-chip>
+        </span>
+        <mat-form-field class="status-select" appearance="outline">
+          <mat-label>Update Status</mat-label>
+          <mat-select [(value)]="selectedStatus" (selectionChange)="updateOrderStatus()">
+            <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
 
@@ -83,7 +91,7 @@
             <mat-card-content>
               <div class="item-details">
                 <div class="pricing-field">
-                  <mat-form-field appearance="outline">
+                  <mat-form-field class="price-input" appearance="outline">
                     <mat-label>Base Price</mat-label>
                     <input matInput type="number" formControlName="price" min="0">
                     <mat-error *ngIf="itemGroup.get('price')?.hasError('required')">
@@ -92,7 +100,7 @@
                     <mat-error *ngIf="itemGroup.get('price')?.hasError('min')">
                       Price must be greater than or equal to 0
                     </mat-error>
-                    <span matTextPrefix>$</span>
+                    <span matTextPrefix>EGP  </span>
                   </mat-form-field>
                 </div>
 
@@ -128,7 +136,7 @@
                           <mat-error *ngIf="materialGroup.get('price')?.hasError('min')">
                             Price must be greater than or equal to 0
                           </mat-error>
-                          <span matTextPrefix>$</span>
+                          <span matTextPrefix>EGP  </span>
                         </mat-form-field>
                       </div>
                     </div>
@@ -154,7 +162,7 @@
                           <mat-error *ngIf="addOnGroup.get('price')?.hasError('min')">
                             Price must be greater than or equal to 0
                           </mat-error>
-                          <span matTextPrefix>$</span>
+                          <span matTextPrefix>EGP </span>
                         </mat-form-field>
                       </div>
                     </div>
@@ -183,7 +191,7 @@
                 </div>
 
                 <div class="item-total">
-                  <strong>Item Total:</strong> {{ getItemTotal(i) | currency }}
+                  <strong>Item Total:</strong> {{ getItemTotal(i) | currency:'EGP' | addSpaceAfterCurrency }}
                 </div>
               </div>
             </mat-card-content>
@@ -200,20 +208,20 @@
           <div class="pricing-summary">
             <div class="price-row">
               <span>Subtotal:</span>
-              <span>{{ subtotal | currency }}</span>
+              <span>{{ subtotal | currency:'EGP' | addSpaceAfterCurrency }}</span>
             </div>
             <div class="price-row">
               <span>Tax (10%):</span>
-              <span>{{ tax | currency }}</span>
+              <span>{{ tax | currency:'EGP' | addSpaceAfterCurrency }}</span>
             </div>
             <div class="price-row">
               <span>Shipping:</span>
-              <span>{{ shipping | currency }}</span>
+              <span>{{ shipping | currency:'EGP' | addSpaceAfterCurrency }}</span>
             </div>
             <mat-divider></mat-divider>
             <div class="price-row total">
               <span>Total:</span>
-              <span>{{ total | currency }}</span>
+              <span>{{ total | currency:'EGP' | addSpaceAfterCurrency }}</span>
             </div>
           </div>
         </mat-card-content>
