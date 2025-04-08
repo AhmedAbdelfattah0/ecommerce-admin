@@ -70,7 +70,7 @@ export class CustomOrderDetailsComponent implements OnInit {
   breadcrumbs: BreadcrumbItem[] = [
     { label: 'Dashboard', url: '/dashboard' },
     { label: 'Custom Orders', url: '/custom-orders' },
-    { label: 'Order Details' }
+    { label: `Order Details ${this.orderId}` }
   ];
 
   get itemsFormArray(): FormArray {
@@ -149,7 +149,7 @@ export class CustomOrderDetailsComponent implements OnInit {
           this.order = order;
           this.selectedStatus = order.status;
           this.initPricingForm(order);
-          this.breadcrumbs[2].label = `Order #${order.save_code}`;
+          this.breadcrumbs[2].label = `Order #${order.id}`;
         },
         error: (err) => {
           this.error = 'Failed to load order details: ' + err.message;

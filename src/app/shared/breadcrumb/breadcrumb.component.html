@@ -2,7 +2,7 @@
   <ng-container *ngFor="let item of items; let last = last; let i = index">
     <a *ngIf="!last && item.url" [routerLink]="item.url">{{ item.label }}</a>
     <span *ngIf="!last && !item.url">{{ item.label }}</span>
-    <span *ngIf="last" class="current">{{ item.label }}</span>
+    <span *ngIf="last" class="current">{{ item.label || 'N/A' }}</span>
     <span class="separator" *ngIf="!last">/</span>
   </ng-container>
 </div>

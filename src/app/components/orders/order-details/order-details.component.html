@@ -2,7 +2,7 @@
   <div class="page">
     <!-- Print Header -->
     <div class="main-header">
-      <h1 class="page-title">Order #{{order.id}}</h1>
+      <h1 class="page-title">Order #{{order.id || 'N/A'}}</h1>
       <div class="actions no-print">
         <button mat-raised-button color="primary" (click)="printOrder()">
           <mat-icon>print</mat-icon>
@@ -23,7 +23,7 @@
         <mat-card-content>
           <div class="detail-row">
             <span class="detail-label">Order ID:</span>
-            <span class="detail-value">{{order.id}}</span>
+            <span class="detail-value">{{order.id || 'N/A'}}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Date:</span>

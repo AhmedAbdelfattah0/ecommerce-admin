@@ -12,7 +12,7 @@
   <div *ngIf="order && !loading && !error">
     <div class="order-header">
       <div>
-        <h1>Order #{{orderId }}</h1>
+        <h1>Order #{{orderId || 'N/A' }}</h1>
         <p class="order-date">Created: {{ order.created_at | date:'medium' }}</p>
       </div>
       <div class="order-status">
