@@ -16,7 +16,7 @@ interface NotificationResponse {
 
 export interface Notification {
   id: number;
-  type: 'order' | 'message' | 'appointment';
+  type: 'order' | 'message' | 'appointment' | 'custom';
   message: string;
   created_at: string;
   is_read: number;
@@ -87,7 +87,7 @@ export class NotificationService {
    * @returns Observable of API response
    */
   markNotificationAsRead(id: number): Observable<ApiResponse<any>> {
-    return this.http.put<ApiResponse<any>>(`/notifications/mark_as_read.php`, { id })
+    return this.http.put<ApiResponse<any>>(`/notifications/mark_notifications.php`, { id })
       .pipe(
         tap(() => {
           // Update local notifications list

@@ -75,19 +75,11 @@ export class HeaderComponent implements OnInit {
     // Navigate based on notification type
     switch (notification.type) {
       case 'order':
-        // Extract order ID from notification message
-        const orderMatch = notification.message.match(/ORDER-(\d+)/);
-        if (orderMatch && orderMatch[1]) {
-          const orderId = orderMatch[1];
-          // Check if it's a custom order message
-          if (notification.message.includes('custom')) {
-            this.router.navigate(['/custom-orders/details', orderId]);
-          } else {
-            this.router.navigate(['/orders/details', orderId]);
-          }
-        } else {
-          this.router.navigate(['/orders']);
-        }
+        this.router.navigate(['/orders']);
+
+        break;
+      case 'custom':
+        this.router.navigate(['/custom-orders']);
         break;
       case 'message':
         this.router.navigate(['/messages']);
