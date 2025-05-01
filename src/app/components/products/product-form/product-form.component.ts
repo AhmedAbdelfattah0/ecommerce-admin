@@ -21,10 +21,6 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/
 import { toasterCases } from '../../../common/constants/app.constants';
 import { ToasterService } from '../../../services/toatser.service';
 // Define an extended interface for UI display
-interface SubCategoryDisplay extends SubCategory {
-  name?: string; // For display in the UI
-  categoryId: number; // Add categoryId for filtering
-}
 
 @Component({
   selector: 'app-product-form',
@@ -51,7 +47,7 @@ export class ProductFormComponent implements OnInit {
   isEditMode = false;
   productId: number | null = null;
   categories: Category[] = [];
-  subCategories: SubCategoryDisplay[] = [];
+  subCategories: SubCategory[] = [];
   isLoading = false;
 
   // Image previews
@@ -100,7 +96,7 @@ export class ProductFormComponent implements OnInit {
       title: ['', [Validators.required]],
       titleAr: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      discountedPrice: ['', [Validators.required]],
+      discountedPrice: [''],
       originalPrice: ['', [Validators.required]],
       imgOne: ['', [Validators.required]],
       imgTwo: [''],
@@ -115,7 +111,7 @@ export class ProductFormComponent implements OnInit {
       reviews: [0],
       badge: [''],
       subtitle: [''],
-      availability: ['in-stock', [Validators.required]],
+      availability: ['in-stock'],
       qty: [0, [Validators.required, Validators.min(0)]]
     });
 
@@ -182,11 +178,7 @@ export class ProductFormComponent implements OnInit {
       .subscribe({
         next: (data) => {
           // Map API subcategories to our display format
-          this.subCategories = data.map(sub => ({
-            ...sub,
-            categoryId: 1, // Default category ID - in a real app, this would come from API
-            name: sub.title // Use title as name for display
-          }));
+          this.subCategories = data
         },
         error: (err) => {
           console.error('Error loading subcategories:', err);
@@ -261,15 +253,6 @@ export class ProductFormComponent implements OnInit {
     }
   }
 
-  // Helper method to filter subcategories based on selected category
-  filteredSubCategories() {
-    const categoryId = this.productForm.get('categoryId')?.value;
-    if (!categoryId) return this.subCategories;
-
-    // Convert to number if categoryId is stored as string in some places
-    const catId = typeof categoryId === 'string' ? parseInt(categoryId, 10) : categoryId;
-    return this.subCategories.filter(sub => sub.categoryId === catId);
-  }
 
 
   updateProduct(product:Product){
