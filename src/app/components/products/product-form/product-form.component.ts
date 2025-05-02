@@ -220,12 +220,11 @@ export class ProductFormComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (product: Product) => {
-          // Map API response to our form format
+          // Make a copy of the form data without discountedPrice (since it's disabled)
           const formData: any = {
             title: product.title,
             titleAr: product.titleAr,
             description: product.description,
-            discountedPrice: product.discountedPrice,
             originalPrice: product.originalPrice,
             imgOne: product.imgOne,
             imgTwo: product.imgTwo,
@@ -244,8 +243,11 @@ export class ProductFormComponent implements OnInit {
             qty: product.qty || 0
           };
 
-          // Set the form values
+          // Set the form values except for disabled controls
           this.productForm.patchValue(formData);
+
+          // Then, set the disabled control separately
+          this.productForm.get('discountedPrice')?.setValue(product.discountedPrice);
 
           // Update discounted price based on loaded values
           this.updateDiscountedPrice();
@@ -268,7 +270,9 @@ export class ProductFormComponent implements OnInit {
       return;
     }
 
-    const productData = this.productForm.value;
+    // Use getRawValue() instead of value to include disabled controls like discountedPrice
+    const productData = this.productForm.getRawValue();
+
     this.isLoading = true;
 
     if (this.isEditMode && this.productId) {
@@ -323,7 +327,7 @@ export class ProductFormComponent implements OnInit {
     this.productService.getProducts()
       .subscribe({
         next: (products) => {
-          debugger;
+
           this.productsList = products;
           if (this.productId) {
             this.findCurrentProductIndex();
