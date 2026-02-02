@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://lugarstore.com/api',
+  apiUrl: 'https://lugarstore.net/api',
 };

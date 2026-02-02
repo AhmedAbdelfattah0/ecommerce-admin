@@ -32,7 +32,7 @@ jobs:
         run: |
           lftp -u "${{ secrets.FTPUSERNAME }}","${{ secrets.FTPPASSWORD }}" ${{ secrets.FTPHOST }} <<EOF
           set ftp:ssl-allow no
-          cd /domains/lugarstore.com/public_html/admin/
+          cd /domains/lugarstore.net/public_html/admin/
           rm -f .ftp-deploy-sync-state.json
           bye
           EOF
@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.FTPUSERNAME }}
           password: ${{ secrets.FTPPASSWORD }}
           local-dir: ./dist/lugare-store-admin/browser/
-          server-dir: /domains/lugarstore.com/public_html/admin/
+          server-dir: /domains/lugarstore.net/public_html/admin/
           exclude: |
             **/.htaccess
             # **/.ftp-deploy-sync-state.json  # Exclude sync state so it won't cache

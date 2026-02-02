@@ -294,7 +294,7 @@ export class CustomOrderDetailsComponent implements OnInit {
   generateContract(): void {
     try {
       // Open the contract in a new tab/window directly
-      const pdfUrl = `https://lugarstore.com/api/orders/generate_contract.php?id=${this.orderId}`;
+      const pdfUrl = `https://lugarstore.net/api/orders/generate_contract.php?id=${this.orderId}`;
       const newWindow = window.open(pdfUrl, '_blank');
 
       // Check if the window was blocked
