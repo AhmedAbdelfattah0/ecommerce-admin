@@ -1,6 +1,23 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/auth/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { ProductListComponent } from './components/products/product-list/product-list.component';
+import { ProductFormComponent } from './components/products/product-form/product-form.component';
+import { CategoriesListComponent } from './components/categories/categories-list/categories-list.component';
+import { CategoryFormComponent } from './components/categories/category-form/category-form.component';
+import { OrderListComponent } from './components/orders/order-list/order-list.component';
+import { OrderDetailsComponent } from './components/orders/order-details/order-details.component';
+import { CustomOrderListComponent } from './components/custom-orders/custom-order-list/custom-order-list.component';
+import { CustomOrderDetailsComponent } from './components/custom-orders/custom-order-details/custom-order-details.component';
+import { AppointmentsComponent } from './components/custom-orders/appointments/appointments.component';
+import { AppointmentDetailsComponent } from './components/custom-orders/appointment-details/appointment-details.component';
+import { MessageListComponent } from './components/messages/message-list/message-list.component';
+import { MessageDetailsComponent } from './components/messages/message-details/message-details.component';
+import { BannerListComponent } from './components/banners/banner-list/banner-list.component';
+import { BannerFormComponent } from './components/banners/banner-form/banner-form.component';
+import { SubCategoriesListComponent } from './components/sub-categories/sub-categories-list/sub-categories-list.component';
+import { SubCategoryFormComponent } from './components/sub-categories/sub-category-form/sub-category-form.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -11,24 +28,24 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent),
+    component: DashboardComponent,
     canActivate: [AuthGuard]
   },
   {
     path: 'products',
     children: [
-      { path: '', loadComponent: () => import('./components/products/product-list/product-list.component').then(m => m.ProductListComponent) },
-      { path: 'new', loadComponent: () => import('./components/products/product-form/product-form.component').then(m => m.ProductFormComponent) },
-      { path: 'edit/:id', loadComponent: () => import('./components/products/product-form/product-form.component').then(m => m.ProductFormComponent) }
+      { path: '', component: ProductListComponent },
+      { path: 'new', component: ProductFormComponent },
+      { path: 'edit/:id', component: ProductFormComponent }
     ],
     canActivate: [AuthGuard]
   },
   {
     path: 'categories',
     children: [
-      { path: '', loadComponent: () => import('./components/categories/categories-list/categories-list.component').then(m => m.CategoriesListComponent) },
-      { path: 'new', loadComponent: () => import('./components/categories/category-form/category-form.component').then(m => m.CategoryFormComponent) },
-      { path: 'edit/:id', loadComponent: () => import('./components/categories/category-form/category-form.component').then(m => m.CategoryFormComponent) }
+      { path: '', component: CategoriesListComponent },
+      { path: 'new', component: CategoryFormComponent },
+      { path: 'edit/:id', component: CategoryFormComponent }
     ],
     canActivate: [AuthGuard]
   },
@@ -36,50 +53,50 @@ export const routes: Routes = [
   {
     path: 'orders',
     children: [
-      { path: '', loadComponent: () => import('./components/orders/order-list/order-list.component').then(m => m.OrderListComponent) },
-      { path: ':id', loadComponent: () => import('./components/orders/order-details/order-details.component').then(m => m.OrderDetailsComponent) }
+      { path: '', component: OrderListComponent },
+      { path: ':id', component: OrderDetailsComponent }
     ],
     canActivate: [AuthGuard]
   },
   {
     path: 'custom-orders',
     children: [
-      { path: '', loadComponent: () => import('./components/custom-orders/custom-order-list/custom-order-list.component').then(m => m.CustomOrderListComponent) },
-      { path: ':id', loadComponent: () => import('./components/custom-orders/custom-order-details/custom-order-details.component').then(m => m.CustomOrderDetailsComponent) }
+      { path: '', component: CustomOrderListComponent },
+      { path: ':id', component: CustomOrderDetailsComponent }
     ],
     canActivate: [AuthGuard]
   },
   {
     path: 'appointments',
     children: [
-      { path: '', loadComponent: () => import('./components/custom-orders/appointments/appointments.component').then(m => m.AppointmentsComponent) },
-      { path: ':id', loadComponent: () => import('./components/custom-orders/appointment-details/appointment-details.component').then(m => m.AppointmentDetailsComponent) }
+      { path: '', component: AppointmentsComponent },
+      { path: ':id', component: AppointmentDetailsComponent }
     ],
     canActivate: [AuthGuard]
   },
   {
     path: 'messages',
     children: [
-      { path: '', loadComponent: () => import('./components/messages/message-list/message-list.component').then(m => m.MessageListComponent) },
-      { path: ':id', loadComponent: () => import('./components/messages/message-details/message-details.component').then(m => m.MessageDetailsComponent) }
+      { path: '', component: MessageListComponent },
+      { path: ':id', component: MessageDetailsComponent }
     ],
     canActivate: [AuthGuard]
   },
   {
     path: 'banners',
     children: [
-      { path: '', loadComponent: () => import('./components/banners/banner-list/banner-list.component').then(m => m.BannerListComponent) },
-      { path: 'new', loadComponent: () => import('./components/banners/banner-form/banner-form.component').then(m => m.BannerFormComponent) },
-      { path: 'edit/:id', loadComponent: () => import('./components/banners/banner-form/banner-form.component').then(m => m.BannerFormComponent) }
+      { path: '', component: BannerListComponent },
+      { path: 'new', component: BannerFormComponent },
+      { path: 'edit/:id', component: BannerFormComponent }
     ],
     canActivate: [AuthGuard]
   },
   {
     path: 'marketing-categories',
     children: [
-      { path: '', loadComponent: () => import('./components/sub-categories/sub-categories-list/sub-categories-list.component').then(m => m.SubCategoriesListComponent) },
-      { path: 'new', loadComponent: () => import('./components/sub-categories/sub-category-form/sub-category-form.component').then(m => m.SubCategoryFormComponent) },
-      { path: 'edit/:id', loadComponent: () => import('./components/sub-categories/sub-category-form/sub-category-form.component').then(m => m.SubCategoryFormComponent) }
+      { path: '', component: SubCategoriesListComponent },
+      { path: 'new', component: SubCategoryFormComponent },
+      { path: 'edit/:id', component: SubCategoryFormComponent }
     ],
     canActivate: [AuthGuard]
    },

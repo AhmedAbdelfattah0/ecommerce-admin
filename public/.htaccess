@@ -1,22 +1,8 @@
-<IfModule mod_headers.c>
-  # Never cache index.html - always get fresh version from server
-  <FilesMatch "index\.html$">
-    Header set Cache-Control "no-cache, no-store, must-revalidate"
-    Header set Pragma "no-cache"
-    Header set Expires "0"
-  </FilesMatch>
-</IfModule>
-
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-
-  # Don't rewrite files or directories (including empty JS files)
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
-
-  # Rewrite everything else to index.html to allow Angular routing
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]
 </IfModule>
 
