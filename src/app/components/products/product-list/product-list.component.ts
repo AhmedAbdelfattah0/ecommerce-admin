@@ -148,15 +148,14 @@ export class ProductListComponent implements OnInit {
       if (result) {
         this.isLoading = true;
         this.productService.deleteProduct(id)
-          .pipe(finalize(() => this.isLoading = false))
           .subscribe({
             next: () => {
-              this.products = this.products.filter(product => product.id !== id);
-              this.dataSource.data = this.products;
               this.toasterService.openToaster(toasterCases.PRODUCT_DELETED);
+              this.loadProducts();
             },
             error: (error) => {
               console.error('Error deleting product:', error);
+              this.isLoading = false;
               this.toasterService.openToaster({
                 message: 'Failed to delete product. Please try again.',
                 type: 'error'
