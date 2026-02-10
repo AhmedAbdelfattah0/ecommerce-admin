@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Message } from '../../../models/message';
 import { MessagesService } from '../../../services/messages/messages.service';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb.component';
+import { EgyptDatePipe } from '../../../common/pipes/egypt-date.pipe';
 
 @Component({
   selector: 'app-message-details',
@@ -19,7 +20,8 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    EgyptDatePipe
   ],
   templateUrl: './message-details.component.html',
   styleUrls: ['./message-details.component.scss']

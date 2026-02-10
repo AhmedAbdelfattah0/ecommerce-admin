@@ -54,6 +54,10 @@ export class ProductListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'imgOne', 'title', 'price', 'categoryName',  'actions'];
   isLoading = false;
 
+  // Store pagination state
+  private currentPageIndex = 0;
+  private currentPageSize = 10;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -115,9 +119,32 @@ export class ProductListComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.products);
     // Set up sorting and pagination after view init
     setTimeout(() => {
-      if (this.sort && this.paginator) {
-        this.dataSource.sort = this.sort;
+      if (this.paginator) {
+        // Set page size
+        this.paginator.pageSize = this.currentPageSize;
+
+        // Calculate max page index for current data
+        const maxPageIndex = Math.max(0, Math.ceil(this.products.length / this.currentPageSize) - 1);
+
+        // If current page index is beyond max, go to last valid page
+        if (this.currentPageIndex > maxPageIndex) {
+          this.currentPageIndex = maxPageIndex;
+        }
+
+        // Restore page index
+        this.paginator.pageIndex = this.currentPageIndex;
+
+        // Set up paginator change listener
+        this.paginator.page.subscribe(event => {
+          this.currentPageIndex = event.pageIndex;
+          this.currentPageSize = event.pageSize;
+        });
+
         this.dataSource.paginator = this.paginator;
+      }
+
+      if (this.sort) {
+        this.dataSource.sort = this.sort;
       }
     });
   }
@@ -147,6 +174,7 @@ export class ProductListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.isLoading = true;
+
         this.productService.deleteProduct(id)
           .subscribe({
             next: () => {

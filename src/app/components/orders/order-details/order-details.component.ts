@@ -18,6 +18,7 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/
 import { ToasterService } from '../../../services/toatser.service';
 import { finalize } from 'rxjs/operators';
 import { AddSpaceAfterCurrencyPipe } from "../../../common/pipes/add-space-after-currency";
+import { EgyptDatePipe } from '../../../common/pipes/egypt-date.pipe';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../shared/confirmation-dialog/confirmation-dialog.component';
 import { toasterCases } from '../../../common/constants/app.constants';
@@ -38,7 +39,8 @@ import { toasterCases } from '../../../common/constants/app.constants';
     MatTooltipModule,
     MatChipsModule,
     BreadcrumbComponent,
-    AddSpaceAfterCurrencyPipe
+    AddSpaceAfterCurrencyPipe,
+    EgyptDatePipe
   ],
   templateUrl: './order-details.component.html',
   styleUrls: ['./order-details.component.scss']

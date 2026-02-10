@@ -16,17 +16,25 @@
       <div class="message-details">
         <div class="detail-row">
           <span class="label">From:</span>
-          <span class="value">{{message.name}} ({{message.email}})</span>
+          <span class="value">{{message.name}}</span>
         </div>
         <div class="detail-row">
+          <span class="label">Email:</span>
+          <span class="value">{{message.email}}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Phone:</span>
+          <span class="value">{{message.phone}}</span>
+        </div>
+        <div class="detail-row" *ngIf="message.subject">
           <span class="label">Subject:</span>
           <span class="value">{{message.subject}}</span>
         </div>
         <div class="detail-row">
           <span class="label">Date:</span>
-          <span class="value">{{message.created_at | date:'medium'}}</span>
+          <span class="value">{{(message.date || message.created_at) | egyptDate:'medium'}}</span>
         </div>
-        <div class="detail-row">
+        <div class="detail-row" *ngIf="message.status">
           <span class="label">Status:</span>
           <span class="value">
             <span [class]="'status-badge ' + message.status">
@@ -36,7 +44,7 @@
         </div>
         <div class="message-content">
           <span class="label">Message:</span>
-          <p class="value message-text">{{message.message}}</p>
+          <p class="value message-text" style="white-space: pre-wrap;">{{message.message}}</p>
         </div>
       </div>
     </mat-card-content>

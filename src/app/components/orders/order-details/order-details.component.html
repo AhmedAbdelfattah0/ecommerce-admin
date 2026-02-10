@@ -27,8 +27,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Date:</span>
-            <span class="detail-value" *ngIf="order.date && order.date !== '0000-00-00'">{{order.date | date:'medium'}}</span>
-            <span class="detail-value" *ngIf="!order.date || order.date === '0000-00-00'">{{order.created_at | date:'medium'}}</span>
+            <span class="detail-value">{{order.created_at | egyptDate:'medium'}}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Status:</span>

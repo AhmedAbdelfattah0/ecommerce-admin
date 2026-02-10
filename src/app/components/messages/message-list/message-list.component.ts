@@ -31,7 +31,7 @@ import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/
   styleUrls: ['./message-list.component.scss']
 })
 export class MessageListComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'name', 'email', 'subject', 'created_at', 'status', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'email', 'phone', 'date', 'actions'];
   dataSource: Message[] = [];
   isLoading = false;
   error: string | null = null;

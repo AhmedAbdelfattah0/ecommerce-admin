@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,7 @@ import { OrderStatus } from '../../../models/order-status';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/breadcrumb/breadcrumb.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { AddSpaceAfterCurrencyPipe } from '../../../common/pipes/add-space-after-currency';
+import { EgyptDatePipe } from '../../../common/pipes/egypt-date.pipe';
 import { finalize } from 'rxjs/operators';
 import { ToasterService } from '../../../services/toatser.service';
 
@@ -43,12 +44,12 @@ import { ToasterService } from '../../../services/toatser.service';
     MatProgressSpinnerModule,
     MatChipsModule,
     BreadcrumbComponent,
-
+    EgyptDatePipe
   ],
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss']
 })
-export class OrderListComponent implements OnInit {
+export class OrderListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['id', 'name', 'email', 'phoneNumber', 'date', 'status', 'statusAr', 'actions'];
   dataSource!: MatTableDataSource<OrderListItem>;
   orders: OrderListItem[] = [];
@@ -56,6 +57,10 @@ export class OrderListComponent implements OnInit {
   isLoading = false;
   searchText = '';
   selectedStatus: string | null = null;
+
+  // Store pagination state
+  private currentPageIndex = 0;
+  private currentPageSize = 10;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -73,6 +78,16 @@ export class OrderListComponent implements OnInit {
   ngOnInit(): void {
     this.loadOrderStatuses();
     this.loadOrders();
+  }
+
+  ngAfterViewInit(): void {
+    // Set up paginator change listener only once
+    if (this.paginator) {
+      this.paginator.page.subscribe(event => {
+        this.currentPageIndex = event.pageIndex;
+        this.currentPageSize = event.pageSize;
+      });
+    }
   }
 
   loadOrderStatuses(): void {
@@ -96,7 +111,8 @@ export class OrderListComponent implements OnInit {
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
         next: (data) => {
-          this.orders = data;
+          // Sort data at source: descending by ID (newest first)
+          this.orders = data.sort((a, b) => Number(b.id) - Number(a.id));
           this.initializeDataSource();
         },
         error: (error) => {
@@ -110,37 +126,57 @@ export class OrderListComponent implements OnInit {
   }
 
   initializeDataSource(): void {
+    // Create new dataSource with already sorted data
     this.dataSource = new MatTableDataSource(this.orders);
-    // Set up sorting and pagination after view init
-    setTimeout(() => {
-      if (this.sort && this.paginator) {
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
 
-        // Add custom sorting data accessor
-        this.dataSource.sortingDataAccessor = (item: OrderListItem, property: string) => {
-          switch (property) {
-            case 'id':
-              return Number(item.id);
-            case 'date':
-              const date = item.date || item.created_at;
-              return date ? new Date(date).getTime() : 0;
-            case 'status':
-              return item.statusName || item.statusLabel || '';
-            case 'statusAr':
-              return item.statusNameAr || '';
-            case 'name':
-              return item.name || '';
-            case 'email':
-              return item.email || '';
-            case 'phoneNumber':
-              return item.phoneNumber || '';
-            default:
-              return '';
-          }
-        };
+    // Set custom sorting data accessor for when user clicks column headers
+    this.dataSource.sortingDataAccessor = (item: OrderListItem, property: string) => {
+      switch (property) {
+        case 'id':
+          return Number(item.id);
+        case 'date':
+          return item.created_at ? new Date(item.created_at).getTime() : 0;
+        case 'status':
+          return item.statusName || item.statusLabel || '';
+        case 'statusAr':
+          return item.statusNameAr || '';
+        case 'name':
+          return item.name || '';
+        case 'email':
+          return item.email || '';
+        case 'phoneNumber':
+          return item.phoneNumber || '';
+        default:
+          return '';
       }
-    });
+    };
+
+    // Set up pagination after view init
+    setTimeout(() => {
+      if (this.paginator) {
+        // Set page size
+        this.paginator.pageSize = this.currentPageSize;
+
+        // Calculate max page index for current data
+        const maxPageIndex = Math.max(0, Math.ceil(this.orders.length / this.currentPageSize) - 1);
+
+        // If current page index is beyond max, go to last valid page
+        if (this.currentPageIndex > maxPageIndex) {
+          this.currentPageIndex = maxPageIndex;
+        }
+
+        // Restore page index
+        this.paginator.pageIndex = this.currentPageIndex;
+
+        // Assign paginator to dataSource
+        this.dataSource.paginator = this.paginator;
+      }
+
+      // Assign sort to allow user to change sorting
+      if (this.sort) {
+        this.dataSource.sort = this.sort;
+      }
+    }, 0);
   }
 
   applyFilter(): void {
@@ -152,7 +188,9 @@ export class OrderListComponent implements OnInit {
       this.dataSource.filter = '';
     }
 
+    // Reset to first page when filtering
     if (this.dataSource.paginator) {
+      this.currentPageIndex = 0;
       this.dataSource.paginator.firstPage();
     }
   }
